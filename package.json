@@ -1,8 +1,8 @@
 {
-  "name": "iot_gl_app",
+  "name": "monitor_signos_app",
   "version": "1.0.0",
-  "description": "IOT_GL_APP",
-  "author": "IoTicos.org",
+  "description": "Monitor_Signos_APP",
+  "author": "Ruben Sanchez Loperena",
   "scripts": {
     "dev": "nuxt",
     "devn": "nodemon api/index.js --exec babel-node",
