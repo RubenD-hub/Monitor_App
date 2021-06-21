@@ -12,30 +12,17 @@
 
 <script>
     export default {
-        //props: ['config'],
+        props: ['config'],
         data(){
             return {
                 value: true,
-                config: {
-                    userId: 'userId',
-                    selectDevice: {
-                        name: "Paciente 1",
-                        dId: "8888",
-                        templateName: "Temp Sensor",
-                        templateId: "24244242424",
-                        saverRule: false
-                    },
-                    varFullName: "Temp",
-                    variable: "uniquestr",
-                    icon: 'fa-sun',
-                    column: 'col-6',
-                    widget: 'indicator',
-                    class: 'danger'
-                }
+                
             }
         },
         mounted() {
-            this.$nuxt.$on('widget-topic', this.processReceivedData)
+            const topic = this.config.userId + "/" + this.config.selectDevice.dId + "/" + this.config.variable + "/sdata";
+            console.log(topic);
+            this.$nuxt.$on(topic, this.processReceivedData)
         },
         methods: {
             processReceivedData(data) {
