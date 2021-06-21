@@ -1,40 +1,56 @@
 <template>
     <card>
         <div slot="header">
-            <h4 class="card title">{{config.selectDevice.name}} - {{config.varFullName}}</h4>
+            <h4 class="card-title">{{config.selectDevice.name}} - {{config.varFullName}}</h4>
         </div>
 
         <i class="fa " :class="[config.icon, getIconColorClass()]" style="font-size: 30px"></i>
 
+        <!-- Button -->  
+        <base-button @click="sendValue()" simple :type="config.class" class="mb-3" size="sm">
+              <i class="tim-icons icon-double-right"></i> Add
+        </base-button>
+          
+          
+        
 
     </card>
 </template>
+
 
 <script>
     export default {
         props: ['config'],
         data(){
             return {
-                value: true,
+                sending: false,
                 
             }
         },
         mounted() {
-            const topic = this.config.userId + "/" + this.config.selectDevice.dId + "/" + this.config.variable + "/sdata";
-            console.log(topic);
-            this.$nuxt.$on(topic, this.processReceivedData)
-        },
-        beforeDestroy() {
-            this.$nuxt.$off(this.config.userId + "/" + this.config.selectDevice.dId + "/" + this.config.variable + "/sdata")
+            
         },
         methods: {
-            processReceivedData(data) {
-                console.log("received");
-                console.log(data);
-                this.value = data.value;
+            sendValue(){
+                this.sending = true;
+
+                setTimeout(() => {
+                    this.sending=false;
+                    }, 1000);
+
+                const toSend = {
+                    topic: this.config.userId + "/" + this.config.selectDevice.dId + "/" + this.config.variable + "/actdata",
+                    msg: {
+                        value: this.config.message
+                    }
+                }
+
+                console.log(toSend);
+                this.$nuxt.$emit('mqtt-sender', toSend);
+
             },
             getIconColorClass() {
-                if(!this.value){
+                if(!this.sending){
                     return "text-dark"
                 }
                 if(this.config.class == "success"){

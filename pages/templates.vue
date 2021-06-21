@@ -1,84 +1,60 @@
 <template>
-    <div class="row">
-        
-        <div class="col-4">
-            <Indicator :config="config1"></Indicator>
-        </div>
-        <div class="col-4">
-            <Indicator :config="config2"></Indicator>
-        </div>
-        <div class="col-4">
-            <Indicator :config="config3"></Indicator>
-        </div>
-
-        <button @click="sendData()">SEND</button>
-    </div>
+  <div class="row">
+    <SMbutton :config="configButton"></SMbutton>
+    <Indicator :config="configIndicator"></Indicator>
+    <button @click="sendData1()">SEND</button>
+  </div>
 </template>
 
 <script>
-    export default {
-        data(){
-            return {
-                value: false,
+export default {
+  data() {
+    return {
+      value: false,
 
-                config1: {
-                    userId: 'userId',
-                    selectDevice: {
-                        name: "Paciente 1",
-                        dId: "8888",
-                        templateName: "Temp Sensor",
-                        templateId: "24244242424",
-                        saverRule: false
-                    },
-                    varFullName: "Temp",
-                    variable: "var1",
-                    icon: 'fa-sun',
-                    column: 'col-6',
-                    widget: 'indicator',
-                    class: 'danger'
-                },
-                config2: {
-                    userId: 'userId',
-                    selectDevice: {
-                        name: "Paciente 1",
-                        dId: "8888",
-                        templateName: "Temp Sensor",
-                        templateId: "24244242424",
-                        saverRule: false
-                    },
-                    varFullName: "SaO2",
-                    variable: "var2",
-                    icon: 'fa-sun',
-                    column: 'col-6',
-                    widget: 'indicator',
-                    class: 'danger'
-                },
-                config3: {
-                    userId: 'userId',
-                    selectDevice: {
-                        name: "Paciente 1",
-                        dId: "8888",
-                        templateName: "Temp Sensor",
-                        templateId: "24244242424",
-                        saverRule: false
-                    },
-                    varFullName: "FR",
-                    variable: "var3",
-                    icon: 'fa-sun',
-                    column: 'col-6',
-                    widget: 'indicator',
-                    class: 'danger'
-                }
-            }
+      configIndicator: {
+        userId: "userId",
+        selectDevice: {
+          name: "Paciente 1",
+          dId: "8888",
+          templateName: "Temp Sensor",
+          templateId: "24244242424",
+          saverRule: false
         },
-        methods: {
-            sendData(){
-                this.value = !this.value;
-                const toSend = {
-                    value: this.value
-                }
-                this.$nuxt.$emit('widget-topic', toSend );
-            }
-        }
+        varFullName: "Temp",
+        variable: "var1",
+        icon: "fa-sun",
+        column: "col-6",
+        widget: "indicator",
+        class: "danger"
+      },
+      configButton: {
+        userId: "userId",
+        selectDevice: {
+          name: "Paciente 1",
+          dId: "8888",
+          templateName: "Temp Sensor",
+          templateId: "24244242424",
+          saverRule: false
+        },
+        varFullName: "Temp",
+        variable: "var1",
+        icon: "fa-sun",
+        column: "col-6",
+        widget: "indicator",
+        class: "danger",
+        message: "{'fanstatus':'stop'}"
+      }
+    };
+  },
+  methods: {
+    sendData1() {
+      this.value = !this.value;
+      const toSend = {
+        value: this.value
+      };
+      this.$nuxt.$emit("userId/8888/var1/sdata", toSend);
     }
+  }
+};
 </script>
