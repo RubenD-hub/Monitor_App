@@ -98,7 +98,7 @@
           <el-table-column label="Actions">
             <div slot-scope="{ row, $index }">
 
-              <!--  -->
+              <!-- Database saver indicator    -->
               <el-tooltip content="Saver Status Indicator" style="margin-right:10px">
                   <i class="fas fa-database" :class="{'text-success' : row.saverRule}"></i>
               </el-tooltip>
