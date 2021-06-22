@@ -853,6 +853,11 @@ export default {
     };
   },
   methods: {
+    addNewWidget() {
+        if (this.widgetType == "numberchart") {
+            this.widgets.push(JSON.parse(JSON.stringify(this.configNc)));
+        }
+    },
     sendData1() {
       this.value = !this.value;
       const toSend = {
