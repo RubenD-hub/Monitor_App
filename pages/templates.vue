@@ -1,50 +1,855 @@
 <template>
-  <div class="row">
-    <SMbutton :config="configButton"></SMbutton>
-    <Indicator :config="configIndicator"></Indicator>
-    <button @click="sendData1()">SEND</button>
+  <div>
+    <!-- Widget configurator -->
+    <div class="row">
+      <card>
+        <div slot="header">
+          <h4 class="card-title">Widgets</h4>
+        </div>
+
+        <!-- Widget selector and forms -->
+        <div class="row">
+          <!-- Widget selector -->
+          <div class="col-6">
+            <!-- Widget selector -->
+            <el-select
+              v-model="widgetType"
+              class="select-success"
+              placeholder="Select Widget"
+              style="width: 100%;"
+            >
+              <!-- NumberChart option -->
+              <el-option
+                class="text-dark"
+                value="numberchart"
+                label="Number Chart INPUT <-"
+              ></el-option>
+
+              <!-- Indicator option -->
+              <el-option
+                class="text-dark"
+                value="indicator"
+                label="Boolean Indicator INPUT <-"
+              ></el-option>
+
+              <!-- Switch option  -->
+              <el-option
+                class="text-dark"
+                value="switch"
+                label="Switch OUTPUT ->"
+              ></el-option>
+
+              <!-- Button option -->
+              <el-option
+                class="text-dark"
+                value="button"
+                label="Button OUTPUT ->"
+              ></el-option>
+            </el-select>
+
+            <br />
+            <br />
+
+            <!-- Form number chart type -->
+            <div v-if="widgetType == 'numberchart'">
+              <!-- Name option -->
+              <base-input
+                v-model="configNc.varFullName"
+                label="Var Name"
+                type="text"
+              >
+              </base-input>
+
+              <!-- Unit option -->
+              <base-input v-model="configNc.unit" label="Unit" type="text">
+              </base-input>
+
+              <!-- Decimal point option -->
+              <base-input
+                v-model.number="configNc.decimalPlaces"
+                label="Decimal Places"
+                type="number"
+              >
+              </base-input>
+
+              <!-- Icon option -->
+              <base-input
+                v-model="configNc.icon"
+                label="Icon"
+                type="text"
+              ></base-input>
+
+              <br />
+
+              <!-- Back time option -->
+              <base-input
+                v-model.number="configNc.chartTimeAgo"
+                label="Chart Back Time (mins)"
+                type="number"
+              ></base-input>
+
+              <br />
+
+              <!-- Themes option -->
+              <el-select
+                v-model="configNc.class"
+                class="select-success"
+                placeholder="Select Class"
+                style="width: 100%;"
+              >
+                <!-- Color themes -->
+                <el-option
+                  class="text-success"
+                  value="success"
+                  label="Success"
+                ></el-option>
+
+                <el-option
+                  class="text-primary"
+                  value="primary"
+                  label="Primary"
+                ></el-option>
+
+                <el-option
+                  class="text-warning"
+                  value="warning"
+                  label="Warning"
+                ></el-option>
+
+                <el-option
+                  class="text-danger"
+                  value="danger"
+                  label="Danger"
+                ></el-option>
+              </el-select>
+
+              <br /><br /><br />
+              <!-- Widget size option -->
+              <el-select
+                v-model="configNc.column"
+                class="select-success"
+                placeholder="Select Column Width"
+                style="width: 100%;"
+              >
+                <!-- Widget sizes -->
+                <el-option
+                  class="text-dark"
+                  value="col-3"
+                  label="col-3"
+                ></el-option>
+
+                <el-option
+                  class="text-dark"
+                  value="col-4"
+                  label="col-4"
+                ></el-option>
+
+                <el-option
+                  class="text-dark"
+                  value="col-5"
+                  label="col-5"
+                ></el-option>
+
+                <el-option
+                  class="text-dark"
+                  value="col-6"
+                  label="col-6"
+                ></el-option>
+
+                <el-option
+                  class="text-dark"
+                  value="col-7"
+                  label="col-7"
+                ></el-option>
+
+                <el-option
+                  class="text-dark"
+                  value="col-8"
+                  label="col-8"
+                ></el-option>
+
+                <el-option
+                  class="text-dark"
+                  value="col-9"
+                  label="col-9"
+                ></el-option>
+
+                <el-option
+                  class="text-dark"
+                  value="col-10"
+                  label="col-10"
+                ></el-option>
+
+                <el-option
+                  class="text-dark"
+                  value="col-11"
+                  label="col-11"
+                ></el-option>
+
+                <el-option
+                  class="text-dark"
+                  value="col-12"
+                  label="col-12"
+                ></el-option>
+              </el-select>
+
+              <br /><br />
+            </div>
+
+            <!-- Form switch type -->
+            <div v-if="widgetType == 'switch'">
+              <!-- Name option -->
+              <base-input
+                v-model="configSwitch.varFullName"
+                label="Var Name"
+                type="text"
+              ></base-input>
+
+              <!-- Icon option -->
+              <base-input
+                v-model="configSwitch.icon"
+                label="Icon"
+                type="text"
+              ></base-input>
+
+              <br />
+
+              <!-- Themes option -->
+              <el-select
+                v-model="configSwitch.class"
+                class="select-success"
+                placeholder="Select Class"
+                style="width: 100%;"
+              >
+                <!-- Color themes -->
+                <el-option
+                  class="text-success"
+                  value="success"
+                  label="Success"
+                ></el-option>
+
+                <el-option
+                  class="text-primary"
+                  value="primary"
+                  label="Primary"
+                ></el-option>
+
+                <el-option
+                  class="text-warning"
+                  value="warning"
+                  label="Warning"
+                ></el-option>
+
+                <el-option
+                  class="text-danger"
+                  value="danger"
+                  label="Danger"
+                ></el-option>
+              </el-select>
+
+              <br /><br /><br />
+
+              <!-- Widget size option -->
+              <el-select
+                v-model="configSwitch.column"
+                class="select-success"
+                placeholder="Select Column Width"
+                style="width: 100%;"
+              >
+                <!-- Widget sizes -->
+                <el-option
+                  class="text-dark"
+                  value="col-3"
+                  label="col-3"
+                ></el-option>
+
+                <el-option
+                  class="text-dark"
+                  value="col-4"
+                  label="col-4"
+                ></el-option>
+
+                <el-option
+                  class="text-dark"
+                  value="col-5"
+                  label="col-5"
+                ></el-option>
+
+                <el-option
+                  class="text-dark"
+                  value="col-6"
+                  label="col-6"
+                ></el-option>
+
+                <el-option
+                  class="text-dark"
+                  value="col-7"
+                  label="col-7"
+                ></el-option>
+
+                <el-option
+                  class="text-dark"
+                  value="col-8"
+                  label="col-8"
+                ></el-option>
+
+                <el-option
+                  class="text-dark"
+                  value="col-9"
+                  label="col-9"
+                ></el-option>
+
+                <el-option
+                  class="text-dark"
+                  value="col-10"
+                  label="col-10"
+                ></el-option>
+
+                <el-option
+                  class="text-dark"
+                  value="col-11"
+                  label="col-11"
+                ></el-option>
+
+                <el-option
+                  class="text-dark"
+                  value="col-12"
+                  label="col-12"
+                ></el-option>
+              </el-select>
+
+              <br /><br />
+            </div>
+
+            <!-- Form button type -->
+            <div v-if="widgetType == 'button'">
+              <!-- Name option -->
+              <base-input
+                v-model="configbutton.varFullName"
+                label="Var Name"
+                type="text"
+              ></base-input>
+
+              <!-- Message option -->
+              <base-input
+                v-model="configbutton.message"
+                label="Message to send"
+                type="text"
+              ></base-input>
+
+              <!-- Button text option -->
+              <base-input
+                v-model="configbutton.text"
+                label="Button Text"
+                type="text"
+              ></base-input>
+
+              <!-- Icon option -->
+              <base-input
+                v-model="configbutton.icon"
+                label="Icon"
+                type="text"
+              ></base-input>
+
+              <br />
+
+              <!-- Themes option -->
+              <el-select
+                v-model="configbutton.class"
+                class="select-success"
+                placeholder="Select Class"
+                style="width: 100%;"
+              >
+                <!-- Color themes -->
+                <el-option
+                  class="text-success"
+                  value="success"
+                  label="Success"
+                ></el-option>
+
+                <el-option
+                  class="text-primary"
+                  value="primary"
+                  label="Primary"
+                ></el-option>
+
+                <el-option
+                  class="text-warning"
+                  value="warning"
+                  label="Warning"
+                ></el-option>
+
+                <el-option
+                  class="text-danger"
+                  value="danger"
+                  label="Danger"
+                ></el-option>
+              </el-select>
+
+              <br /><br /><br />
+
+              <!-- Widget size option -->
+              <el-select
+                v-model="configbutton.column"
+                class="select-success"
+                placeholder="Select Column Width"
+                style="width: 100%;"
+              >
+                <!-- Widget sizes -->
+                <el-option
+                  class="text-dark"
+                  value="col-3"
+                  label="col-3"
+                ></el-option>
+
+                <el-option
+                  class="text-dark"
+                  value="col-4"
+                  label="col-4"
+                ></el-option>
+
+                <el-option
+                  class="text-dark"
+                  value="col-5"
+                  label="col-5"
+                ></el-option>
+
+                <el-option
+                  class="text-dark"
+                  value="col-6"
+                  label="col-6"
+                ></el-option>
+
+                <el-option
+                  class="text-dark"
+                  value="col-7"
+                  label="col-7"
+                ></el-option>
+
+                <el-option
+                  class="text-dark"
+                  value="col-8"
+                  label="col-8"
+                ></el-option>
+
+                <el-option
+                  class="text-dark"
+                  value="col-9"
+                  label="col-9"
+                ></el-option>
+
+                <el-option
+                  class="text-dark"
+                  value="col-10"
+                  label="col-10"
+                ></el-option>
+
+                <el-option
+                  class="text-dark"
+                  value="col-11"
+                  label="col-11"
+                ></el-option>
+
+                <el-option
+                  class="text-dark"
+                  value="col-12"
+                  label="col-12"
+                ></el-option>
+              </el-select>
+
+              <br /><br />
+            </div>
+
+            <!-- Form indicator type -->
+            <div v-if="widgetType == 'indicator'">
+              <!-- Name option -->
+              <base-input
+                v-model="configIndicator.varFullName"
+                label="Var Name"
+                type="text"
+              ></base-input>
+
+              <!-- Icon option -->
+              <base-input
+                v-model="configIndicator.icon"
+                label="Icon"
+                type="text"
+              ></base-input>
+
+              <br />
+
+              <!-- Themes option -->
+              <el-select
+                v-model="configIndicator.class"
+                class="select-success"
+                placeholder="Select Class"
+                style="width: 100%;"
+              >
+                <!-- Color themes -->
+                <el-option
+                  class="text-success"
+                  value="success"
+                  label="Success"
+                ></el-option>
+
+                <el-option
+                  class="text-primary"
+                  value="primary"
+                  label="Primary"
+                ></el-option>
+
+                <el-option
+                  class="text-warning"
+                  value="warning"
+                  label="Warning"
+                ></el-option>
+
+                <el-option
+                  class="text-danger"
+                  value="danger"
+                  label="Danger"
+                ></el-option>
+              </el-select>
+
+              <br /><br /><br />
+
+              <!-- Widget size option -->
+              <el-select
+                v-model="configIndicator.column"
+                class="select-success"
+                placeholder="Select Column Width"
+                style="width: 100%;"
+              >
+                <!-- Widget sizes -->
+                <el-option
+                  class="text-dark"
+                  value="col-3"
+                  label="col-3"
+                ></el-option>
+
+                <el-option
+                  class="text-dark"
+                  value="col-4"
+                  label="col-4"
+                ></el-option>
+
+                <el-option
+                  class="text-dark"
+                  value="col-5"
+                  label="col-5"
+                ></el-option>
+
+                <el-option
+                  class="text-dark"
+                  value="col-6"
+                  label="col-6"
+                ></el-option>
+
+                <el-option
+                  class="text-dark"
+                  value="col-7"
+                  label="col-7"
+                ></el-option>
+
+                <el-option
+                  class="text-dark"
+                  value="col-8"
+                  label="col-8"
+                ></el-option>
+
+                <el-option
+                  class="text-dark"
+                  value="col-9"
+                  label="col-9"
+                ></el-option>
+
+                <el-option
+                  class="text-dark"
+                  value="col-10"
+                  label="col-10"
+                ></el-option>
+
+                <el-option
+                  class="text-dark"
+                  value="col-11"
+                  label="col-11"
+                ></el-option>
+
+                <el-option
+                  class="text-dark"
+                  value="col-12"
+                  label="col-12"
+                ></el-option>
+              </el-select>
+
+              <br /><br />
+            </div>
+          </div>
+
+          <!-- WIDGET PREVIEW -->
+          <div class="col-6">
+            <!-- Widget numberChart -->
+            <Rtnumberchart
+              v-if="widgetType == 'numberchart'"
+              :config="configNc"
+            ></Rtnumberchart>
+
+            <!-- Widget switch -->
+            <SMswitch
+              v-if="widgetType == 'switch'"
+              :config="configSwitch"
+            ></SMswitch>
+
+            <!-- Widget button -->
+            <SMbutton
+              v-if="widgetType == 'button'"
+              :config="configbutton"
+            ></SMbutton>
+
+            <!-- Widget indicator -->
+            <Indicator
+              v-if="widgetType == 'indicator'"
+              :config="configIndicator"
+            ></Indicator>
+          </div>
+        </div>
+
+        <!-- ADD WIDGET BUTTON -->
+        <div class="row pull-right">
+          <div class="col-12">
+            <base-button
+              native-type="submit"
+              type="primary"
+              class="mb-3"
+              size="lg"
+              @click="addNewWidget()"
+              >Add Widget</base-button
+            >
+          </div>
+        </div>
+      </card>
+    </div>
+
+    <!-- DASHBOARD PREVIEW -->
+    <div class="row">
+      <div v-for="(widget, index) of widgets" :class="[widget.column]">
+        <i
+          aria-hidden="true"
+          class="fa fa-trash text-warning pull-right"
+          @click="deleteWidget(index)"
+          style="margin-bottom: 10px;"
+        ></i>
+
+        <!-- Widget numberChart -->
+        <Rtnumberchart
+          v-if="widget.widget == 'numberchart'"
+          :config="widget"
+        ></Rtnumberchart>
+
+        <!-- Widget switch -->
+        <SMswitch v-if="widget.widget == 'switch'" :config="widget"></SMswitch>
+
+        <!-- Widget button -->
+        <SMbutton v-if="widget.widget == 'button'" :config="widget"></SMbutton>
+
+        <!-- Widget indicator -->
+        <Indicator
+          v-if="widget.widget == 'indicator'"
+          :config="widget"
+        ></Indicator>
+      </div>
+    </div>
+
+    <!-- SAVE TEMPLATE-->
+    <div class="row">
+      <card>
+        <div slot="header">
+          <h4 class="card-title">Save Template</h4>
+        </div>
+
+        <div class="row">
+          <!-- Template name -->
+          <base-input
+            class="col-4"
+            v-model="templateName"
+            label="Template Name"
+            type="text"
+          ></base-input>
+
+          <!-- Template description  -->
+          <base-input
+            class="col-8"
+            v-model="templateDescription"
+            label="Template Description"
+            type="text"
+          ></base-input>
+        </div>
+
+        <br /><br />
+
+        <!-- Save template button -->
+        <div class="row">
+          <div class="col-12">
+            <base-button
+              native-type="submit"
+              type="primary"
+              class="mb-3 pull-right"
+              size="lg"
+              @click="saveTemplate()"
+            >
+              Save Template
+            </base-button>
+          </div>
+        </div>
+      </card>
+    </div>
+
+    <!-- TEMPLATES TABLE -->
+    <div class="row">
+      <card>
+        <div slot="header">
+          <h4 class="card-title">Templates</h4>
+        </div>
+
+        <div class="row">
+          <el-table :data="templates">
+            <!-- Template number -->
+            <el-table-column min-width="50" label="#" align="center">
+              <div class="photo" slot-scope="{ row, $index }">
+                {{ $index + 1 }}
+              </div>
+            </el-table-column>
+
+            <!-- Template name -->
+            <el-table-column prop="name" label="Name"></el-table-column>
+
+            <!-- Template description -->
+            <el-table-column
+              prop="description"
+              label="Description"
+            ></el-table-column>
+
+            <!-- Widgets number -->
+            <el-table-column
+              prop="widgets.length"
+              label="Widgets"
+            ></el-table-column>
+
+            <!-- Actions -->
+            <el-table-column header-align="right" align="right" label="Actions">
+              <div
+                slot-scope="{ row, $index }"
+                class="text-right table-actions"
+              >
+                <el-tooltip
+                  content="Delete"
+                  effect="light"
+                  :open-delay="300"
+                  placement="top"
+                >
+                  <base-button
+                    @click="deleteTemplate(row)"
+                    type="danger"
+                    icon
+                    size="sm"
+                    class="btn-link"
+                  >
+                    <i class="tim-icons icon-simple-remove "></i>
+                  </base-button>
+                </el-tooltip>
+              </div>
+            </el-table-column>
+          </el-table>
+        </div>
+      </card>
+    </div>
+
+    <!-- JSONS -->
+    <Json :value="widgets"></Json>
   </div>
 </template>
 
 <script>
+import { Table, TableColumn } from "element-ui";
+import { Select, Option } from "element-ui";
+
 export default {
+  components: {
+    [Table.name]: Table,
+    [TableColumn.name]: TableColumn,
+    [Option.name]: Option,
+    [Select.name]: Select
+  },
   data() {
     return {
-      value: false,
+      widgets: [],
+      templates: [],
+      widgetType: "",
+      templateName: "",
+      templateDescription: "",
+
+      configNc: {
+        userId: "sampleuserid",
+        selectDevice: {
+          name: "Home",
+          dId: "8888"
+        },
+        varFullName: "temperature",
+        variable: "varname",
+        unit: "Watts",
+        class: "success",
+        column: "col-12",
+        decimalPlaces: 2,
+        widget: "numberchart",
+        icon: "fa-bath",
+        chartTimeAgo: 1566,
+        demo: true
+      },
+
+      configSwitch: {
+        userId: "userid",
+        selectDevice: {
+          name: "Home",
+          dId: "8888"
+        },
+        varFullName: "Luz",
+        variable: "varname",
+        class: "danger",
+        widget: "switch",
+        icon: "fa-bath",
+        column: "col-6"
+      },
+
+      configbutton: {
+        userId: "userid",
+        selectDevice: {
+          name: "Home",
+          dId: "8888"
+        },
+        varFullName: "temperature",
+        text: "send",
+        message: "testing123",
+        variable: "varname",
+        widget: "button",
+        icon: "fa-bath",
+        column: "col-6"
+      },
 
       configIndicator: {
-        userId: "userId",
+        userId: "userid",
         selectDevice: {
-          name: "Paciente 1",
-          dId: "8888",
-          templateName: "Temp Sensor",
-          templateId: "24244242424",
-          saverRule: false
+          name: "Home",
+          dId: "8888"
         },
-        varFullName: "Temp",
-        variable: "var1",
-        icon: "fa-sun",
-        column: "col-6",
+        varFullName: "temperature",
+        variable: "varname",
+        class: "success",
         widget: "indicator",
-        class: "danger"
+        icon: "fa-bath",
+        column: "col-6"
       },
-      configButton: {
-        userId: "userId",
-        selectDevice: {
-          name: "Paciente 1",
-          dId: "8888",
-          templateName: "Temp Sensor",
-          templateId: "24244242424",
-          saverRule: false
-        },
-        varFullName: "Temp",
-        variable: "var1",
-        icon: "fa-sun",
-        column: "col-6",
-        widget: "indicator",
-        class: "danger",
-        message: "{'fanstatus':'stop'}"
-      }
+
+      value: false
     };
   },
   methods: {
