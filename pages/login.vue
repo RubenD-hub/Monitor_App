@@ -4,7 +4,7 @@
       <card class="card-login card-white">
         <template slot="header">
           <img src="img//card-primary.png" alt="" />
-          <h1 class="card-title">IoT GL   </h1>
+          <h1 class="card-title">Sign Monitor</h1>
         </template>
 
         <div>
@@ -57,7 +57,7 @@
 <script>
 const Cookie = process.client ? require("js-cookie") : undefined;
 export default {
-  middleware: 'notAuthenticated',
+  // middleware: 'notAuthenticated',
   name: "login-page",
   layout: "auth",
   data() {

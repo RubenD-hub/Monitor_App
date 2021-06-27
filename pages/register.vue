@@ -65,7 +65,7 @@
 
 <script>
 export default {
-  middleware: 'notAuthenticated',
+  // middleware: 'notAuthenticated',
   layout: "auth",
   data() {
     return {
