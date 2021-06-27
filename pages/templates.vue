@@ -632,7 +632,7 @@
 
     <!-- DASHBOARD PREVIEW -->
     <div class="row">
-      <div v-for="(widget, index) of widgets" :class="[widget.column]">
+      <div v-for="(widget, index) in widgets" :key="index" :class="[widget.column]">
         <i
           aria-hidden="true"
           class="fa fa-trash text-warning pull-right"
@@ -853,10 +853,38 @@ export default {
     };
   },
   methods: {
+    deleteWidget(index) {
+        this.widgets.splice(index, 1);
+    },
     addNewWidget() {
         if (this.widgetType == "numberchart") {
-            this.widgets.push(JSON.parse(JSON.stringify(this.configNc)));
-        }
+        this.configNc.variable = this.makeid(10);
+        this.widgets.push(JSON.parse(JSON.stringify(this.configNc)));
+      }
+      if (this.widgetType == "switch") {
+        this.configSwitch.variable = this.makeid(10);
+        this.widgets.push(JSON.parse(JSON.stringify(this.configSwitch)));
+      }
+      if (this.widgetType == "button") {
+        this.configbutton.variable = this.makeid(10);
+        this.widgets.push(JSON.parse(JSON.stringify(this.configbutton)));
+      }
+      if (this.widgetType == "indicator") {
+        this.configIndicator.variable = this.makeid(10);
+        this.widgets.push(JSON.parse(JSON.stringify(this.configIndicator)));
+      }
+    },
+    makeid(length) {
+      var result = "";
+      var characters =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      var charactersLength = characters.length;
+      for (var i = 0; i < length; i++) {
+        result += characters.charAt(
+          Math.floor(Math.random() * charactersLength)
+        );
+      }
+      return result;
     },
     sendData1() {
       this.value = !this.value;
