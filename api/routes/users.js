@@ -1,7 +1,7 @@
 const express = require("express");         // --> Server
 const router = express.Router();
 const jwt = require("jsonwebtoken");        // --> Json web token
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcrypt");           // --> Encrypt password
 
 //models import
 import User from "../models/user.js";
@@ -12,6 +12,7 @@ import User from "../models/user.js";
 
 // Authentication
 
+// User register
 router.post("/register", async (req, res) => {
     try {
         const name = req.body.name;
@@ -50,7 +51,55 @@ router.post("/register", async (req, res) => {
     }
 });
 
-router.post("/login", (req, res) => {});
+// User login
+router.post("/login", async (req, res) => {
+
+
+    const email = req.body.email;
+    const password = req.body.password;
+
+    var user = await User.findOne({email: email});      // Search for user in mongo
+
+    //if no email
+    if(!user){
+        const toSend = {
+            status: "error",
+            error: "Invalid Credentials"
+        }
+        return res.status(401).json(toSend);    
+    }
+
+    //if email and password ok
+    if (bcrypt.compareSync(password, user.password)){
+
+        user.set('password', undefined, {strict: false});   // Remove the password field
+
+        const token = jwt.sign({userData: user}, 'securePasswordHere', {expiresIn: 60 * 60 * 24 * 30});
+
+        const toSend = {
+            status: "success",
+            token: token,
+            userData: user
+        }
+
+        return res.json(toSend);
+
+    }else{
+        const toSend = {
+            status: "error",
+            error: "Invalid Credentials"
+        }
+        return res.status(401).json(toSend);
+    }
+
+
+
+});
+
+
+
+
+
 
 router.get("/new-user", async (req, res) => {
 try {
