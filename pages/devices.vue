@@ -142,6 +142,7 @@ import { Table, TableColumn } from "element-ui";
 import { Select, Option } from "element-ui";
 
 export default {
+  middleware: "authenticated",
   components: {
     [Table.name]: Table,
     [TableColumn.name]: TableColumn,
@@ -175,7 +176,23 @@ export default {
       ]
     };
   },
+  mounted(){
+    this.getDevices();
+  },
   methods: {
+    // Get all devices
+    getDevices(){
+      const axiosHeader = {
+        headers: {
+          token: this.$store.state.auth.token
+        }
+      }
+      this.$axios.get("/device", axiosHeader)
+      .then(res => {
+        console.log(res.data.data);
+        this.devices = res.data.data;
+      })
+    },
     // Remove device
     deleteDevice(device) {
       alert("Deleting " + device.name);

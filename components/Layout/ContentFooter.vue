@@ -2,19 +2,10 @@
   <footer class="footer">
     <div class="container-fluid">
       <ul class="nav">
+        
         <li class="nav-item">
           <a
-            href="http://creative-tim.com"
-            target="_blank"
-            rel="noopener"
-            class="nav-link"
-          >
-            Creative Tim
-          </a>
-        </li>
-        <li class="nav-item">
-          <a
-            href="https://www.creative-tim.com/presentation"
+            href=""   
             target="_blank"
             rel="noopener"
             class="nav-link"
@@ -24,12 +15,12 @@
         </li>
         <li class="nav-item">
           <a
-            href="http://blog.creative-tim.com"
+            href=""
             target="_blank"
             rel="noopener"
             class="nav-link"
           >
-            Blog
+            Documentation
           </a>
         </li>
       </ul>
@@ -37,12 +28,12 @@
         &copy; {{ year }}, made with <i class="tim-icons icon-heart-2"></i> by
         
         <a
-          href="https://www.creative-tim.com/?ref=pdf-vuejs"
+          href=""
           target="_blank"
           rel="noopener"
-          >Creative Tim</a
+          >Ruben</a
         >
-        for a better web.
+        for a better care.
       </div>
     </div>
   </footer>
