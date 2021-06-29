@@ -22,23 +22,34 @@ import Device from '../models/device.js';
 */
 
 // Get all devices
-router.get("/device", checkAuth ,(req, res) => {
+router.get("/device", checkAuth , async (req, res) => {
 
+    try {
+
+        const userId = req.userData._id;
+        const devices = await Device.find({ userId: userId });
     
+        const toSend = {
+          status: "success",
+          data: devices
+        };
+    
+        res.json(toSend);
+    
+    } catch (error) {
+    
+        console.log("ERROR GETTING DEVICES")
+    
+        const toSend = {
+          status: "error",
+          error: error
+        };
+    
+        return res.status(500).json(toSend);
+    }
 });
 
-/* 
-{
-   "newDevice":{
-      "dId":"121212",
-      "name":"HOME",
-      "templateName":"esp32 template",
-      "templateId":"ababab"
-   }
-}
-*/
-
-// Create device
+// Create new device
 router.post("/device", checkAuth , async (req, res) => {
 
     try {
