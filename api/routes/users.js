@@ -9,7 +9,6 @@ import User from "../models/user.js";
 //POST -> req.body
 //GET -> req.query
 
-
 // Authentication
 
 // User register
@@ -53,8 +52,6 @@ router.post("/register", async (req, res) => {
 
 // User login
 router.post("/login", async (req, res) => {
-
-
     const email = req.body.email;
     const password = req.body.password;
 
@@ -96,23 +93,5 @@ router.post("/login", async (req, res) => {
 
 });
 
-
-
-
-
-
-router.get("/new-user", async (req, res) => {
-try {
-  const user = await User.create({
-    name: "Benjamin",
-    email: "a@b.com",
-    password: "121212"
-  });
-  res.json({ status: "success" });
-} catch (error) {
-  console.log(error);
-  res.json({ status: "fail" });
-}
-});
 
 module.exports = router;
