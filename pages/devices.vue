@@ -76,7 +76,7 @@
         </div>
 
         <!-- Device Table -->
-        <el-table :data="devices">
+        <el-table :data="$store.state.devices">
           
           <!-- Index column -->
           <el-table-column
@@ -132,7 +132,7 @@
     </div>
 
 
-    <Json :value="devices"></Json>
+    <Json :value="$store.state.devices"></Json>
 
   </div>
 </template>
@@ -151,48 +151,15 @@ export default {
   },
   data() {
     return {
-      devices: [
-        {
-          name: "Temp",
-          dId: "8888",
-          templateName: "Temp Sensor",
-          templateId: "24244242424",
-          saverRule: false
-        },
-        {
-          name: "SaO2",
-          dId: "2222",
-          templateName: "SaO2 Sensor",
-          templateId: "2432415435",
-          saverRule: true
-        },
-        {
-          name: "FR",
-          dId: "7777",
-          templateName: "FR Sensor",
-          templateId: "5345635364",
-          saverRule: false
-        }
-      ]
+      
     };
   },
   mounted(){
-    this.getDevices();
+    this.$store.dispatch("getDevices");
   },
   methods: {
     // Get all devices
-    getDevices(){
-      const axiosHeader = {
-        headers: {
-          token: this.$store.state.auth.token
-        }
-      }
-      this.$axios.get("/device", axiosHeader)
-      .then(res => {
-        console.log(res.data.data);
-        this.devices = res.data.data;
-      })
-    },
+    
     // Remove device
     deleteDevice(device) {
       alert("Deleting " + device.name);
