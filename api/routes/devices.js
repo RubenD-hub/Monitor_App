@@ -4,19 +4,27 @@ const router = express.Router();
 const { checkAuth } = require('../middlewares/authentication.js')
 
 
+/*  
+  __  __         _     _    
+ |  \/  |___  __| |___| |___
+ | |\/| / _ \/ _` / -_) (_-<
+ |_|  |_\___/\__,_\___|_/__/
+                            
+*/
+
+import Device from '../models/device.js';
+
+/*  _        _ 
+   /_\  _ __(_)
+  / _ \| '_ \ |
+ /_/ \_\ .__/_|
+       |_|     
+*/
+
 // Get all devices
 router.get("/device", checkAuth ,(req, res) => {
 
-    console.log(req.userData); 
-
-    //req.userData.userId
-
-    const toSend = {
-        status: "success",
-        data: "[2 , 3 , 4 , 5 ]"
-    };
-
-    return res.status(200).json(toSend);
+    
 });
 
 // Create device
@@ -33,5 +41,14 @@ router.delete("/device", (req, res) => {
 router.put("/device", (req, res) => {
 
 });
+
+/*
+___             _   _             
+| __|  _ _ _  __| |_(_)___ _ _  ___
+| _| || | ' \/ _|  _| / _ \ ' \(_-<
+|_| \_,_|_||_\__|\__|_\___/_||_/__/
+                                        
+*/
+
 
 module.exports = router;
