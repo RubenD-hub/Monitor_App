@@ -1,133 +1,148 @@
 const express = require("express");
 const router = express.Router();
 
-const { checkAuth } = require('../middlewares/authentication.js')
+const { checkAuth } = require("../middlewares/authentication.js");
 
+/*
+============================================
+                  MODELS                                    
+============================================
+*/
+import Device from "../models/device.js";
 
-/*  
-  __  __         _     _    
- |  \/  |___  __| |___| |___
- | |\/| / _ \/ _` / -_) (_-<
- |_|  |_\___/\__,_\___|_/__/
-                            
+/*
+============================================
+                  API                                    
+============================================
 */
 
-import Device from '../models/device.js';
+//GET DEVICES
+router.get("/device", checkAuth, async (req, res) => {
+  try {
+    const userId = req.userData._id;
+    const devices = await Device.find({ userId: userId });
 
-/*  _        _ 
-   /_\  _ __(_)
-  / _ \| '_ \ |
- /_/ \_\ .__/_|
-       |_|     
-*/
+    const toSend = {
+      status: "success",
+      data: devices
+    };
 
-// Get all devices
-router.get("/device", checkAuth , async (req, res) => {
+    res.json(toSend);
+  } catch (error) {
+    console.log("ERROR GETTING DEVICES");
 
-    try {
+    const toSend = {
+      status: "error",
+      error: error
+    };
 
-        const userId = req.userData._id;
-        const devices = await Device.find({ userId: userId });
-    
-        const toSend = {
-          status: "success",
-          data: devices
-        };
-    
-        res.json(toSend);
-    
-    } catch (error) {
-    
-        console.log("ERROR GETTING DEVICES")
-    
-        const toSend = {
-          status: "error",
-          error: error
-        };
-    
-        return res.status(500).json(toSend);
-    }
+    return res.status(500).json(toSend);
+  }
 });
 
-// Create new device
-router.post("/device", checkAuth , async (req, res) => {
+//NEW DEVICE
+router.post("/device", checkAuth, async (req, res) => {
+  try {
+    const userId = req.userData._id;
+    var newDevice = req.body.newDevice;
 
-    try {
-        const userId = req.userData._id;
-        var newDevice = req.body.newDevice;
-        
-        newDevice.userId = userId;
-        newDevice.createdTime = Date.now();
-      
-        const device = await Device.create(newDevice);
-      
-        const toSend = {
-          status: "success"
-        }
-      
-        return res.json(toSend);
-    
-    } catch (error) {
-        console.log("ERROR CREATING NEW DEVICE");
-        console.log(error);
-    
-        const toSend = {
-          status: "error",
-          error: error
-        }
-      
-        return res.status(500).json(toSend);
-    
-    }
+    newDevice.userId = userId;
+    newDevice.createdTime = Date.now();
 
+    const device = await Device.create(newDevice);
+
+    selectDevice(userId, newDevice.dId);
+
+    const toSend = {
+      status: "success"
+    };
+
+    return res.json(toSend);
+  } catch (error) {
+    console.log("ERROR CREATING NEW DEVICE");
+    console.log(error);
+
+    const toSend = {
+      status: "error",
+      error: error
+    };
+
+    return res.status(500).json(toSend);
+  }
 });
 
-// Delete device
-router.delete("/device", checkAuth, async(req, res) => {
+//DELETE DEVICE
+router.delete("/device", checkAuth, async (req, res) => {
+  try {
+    const userId = req.userData._id;
+    const dId = req.query.dId;
 
-    try {
-      const userId = req.userData._id;
-      const dId = req.query.dId;
-  
-  
-      const result = await Device.deleteOne({userId: userId, dId: dId});
-    
-      const toSend = {
-        status: "success",
-        data: result
-      };
-    
-      return res.json(toSend);
-      
-    } catch (error) {
-  
-      console.log("ERROR DELETING DEVICE");
-      console.log(error);
-  
-      const toSend = {
-        status: "error",
-        error: error
-      };
-  
-      return res.status(500).json(toSend);
-    }
-  
-  
-  
+    const result = await Device.deleteOne({ userId: userId, dId: dId });
+
+    const toSend = {
+      status: "success",
+      data: result
+    };
+
+    return res.json(toSend);
+  } catch (error) {
+    console.log("ERROR DELETING DEVICE");
+    console.log(error);
+
+    const toSend = {
+      status: "error",
+      error: error
+    };
+
+    return res.status(500).json(toSend);
+  }
 });
 
-// Update device
-router.put("/device", (req, res) => {
+//UPDATE DEVICE
+router.put("/device", checkAuth, (req, res) => {
+  const dId = req.body.dId;
+  const userId = req.userData._id;
 
+  if (selectDevice(userId, dId)) {
+    const toSend = {
+      status: "success"
+    };
+
+    return res.json(toSend);
+  } else {
+    const toSend = {
+      status: "error"
+    };
+
+    return res.json(toSend);
+  }
 });
 
 /*
-___             _   _             
-| __|  _ _ _  __| |_(_)___ _ _  ___
-| _| || | ' \/ _|  _| / _ \ ' \(_-<
-|_| \_,_|_||_\__|\__|_\___/_||_/__/
-                                        
+============================================
+                Functions                                    
+============================================
 */
 
+async function selectDevice(userId, dId) {
+  try {
+    const result = await Device.updateMany(
+      { userId: userId },
+      { selected: false }
+    );
+
+    const result2 = await Device.updateOne(
+      { dId: dId, userId: userId },
+      { selected: true }
+    );
+
+    return true;
+
+  } catch (error) {
+    console.log("ERROR IN 'selectDevice' FUNCTION ");
+    console.log(error);
+    return false;
+  }
+}
 
 module.exports = router;
