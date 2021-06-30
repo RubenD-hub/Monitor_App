@@ -155,14 +155,43 @@ export default {
     };
   },
   mounted(){
+    // Get all devices
     this.$store.dispatch("getDevices");
   },
   methods: {
-    // Get all devices
+    
     
     // Remove device
     deleteDevice(device) {
-      alert("Deleting " + device.name);
+      const axiosHeader = {
+        headers: {
+          token: this.$store.state.auth.token
+        },
+        params: {
+          dId: device.dId
+        }
+      };
+      this.$axios
+        .delete("/device", axiosHeader)
+        .then(res => {
+          if (res.data.status == "success") {
+            this.$notify({
+              type: "success",
+              icon: "tim-icons icon-check-2",
+              message: device.name + " deleted!"
+            });
+            this.$store.dispatch("getDevices");
+          }
+          
+        })
+        .catch(e => {
+          console.log(e);
+          this.$notify({
+            type: "danger",
+            icon: "tim-icons icon-alert-circle-exc",
+            message: " Error deleting " + device.name
+          });
+        });
     },
     // Modify the state of the save rule
     updateSaverRuleStatus(index) {
