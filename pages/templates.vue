@@ -660,8 +660,8 @@
       </div>
     </div>
 
-    <!-- SAVE TEMPLATE-->
-    <div class="row">
+    <!-- SAVE TEMPLATE v-if="widgets.length > 0" -->
+    <div class="row" >
       <card>
         <div slot="header">
           <h4 class="card-title">Save Template</h4>
@@ -696,6 +696,7 @@
               class="mb-3 pull-right"
               size="lg"
               @click="saveTemplate()"
+              :disabled="widgets.length == 0"
             >
               Save Template
             </base-button>
