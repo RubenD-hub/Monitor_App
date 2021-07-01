@@ -765,7 +765,7 @@
     </div>
 
     <!-- JSONS -->
-    <Json :value="widgets"></Json>
+    <Json :value="templates"></Json>
   </div>
 </template>
 
@@ -853,14 +853,42 @@ export default {
       value: false
     };
   },
+  mounted() {
+    this.getTemplates();
+  },
   methods: {
+    //Get Templates
+    async getTemplates() {
+      const axiosHeaders = {
+        headers: {
+          token: this.$store.state.auth.token
+        }
+      };
+      try {
+        const res = await this.$axios.get("/template", axiosHeaders);
+        console.log(res.data);
+        if (res.data.status == "success") {
+          this.templates = res.data.data;
+        }
+      } catch (error) {
+        this.$notify({
+          type: "danger",
+          icon: "tim-icons icon-alert-circle-exc",
+          message: "Error getting templates..."
+        });
+        console.log(error);
+        return;
+      }
+    },
+
+    //Save Template
     async saveTemplate() {
       const axiosHeaders = {
         headers: {
           token: this.$store.state.auth.token
         }
       };
-      console.log(axiosHeaders)
+      console.log(axiosHeaders);
       const toSend = {
         template: {
           name: this.templateName,
@@ -877,7 +905,7 @@ export default {
             icon: "tim-icons icon-alert-circle-exc",
             message: "Template created!"
           });
-          //this.getTemplates();
+          this.getTemplates();
         }
       } catch (error) {
         this.$notify({
@@ -889,10 +917,44 @@ export default {
         return;
       }
     },
-
+    //Delete Template
+    async deleteTemplate(template) {
+      
+      const axiosHeaders = {
+        headers: {
+          token: this.$store.state.auth.token
+        },
+        params:{
+          templateId:template._id
+        }
+      };
+      console.log(axiosHeaders);
+      try {
+        const res = await this.$axios.delete("/template", axiosHeaders);
+        if (res.data.status == "success") {
+          this.$notify({
+            type: "success",
+            icon: "tim-icons icon-alert-circle-exc",
+            message: template.name + " was deleted!"
+          });
+          
+          this.getTemplates();
+        }
+      } catch (error) {
+        this.$notify({
+          type: "danger",
+          icon: "tim-icons icon-alert-circle-exc",
+          message: "Error getting templates..."
+        });
+        console.log(error);
+        return;
+      }
+    },
+    //Delete Widget
     deleteWidget(index) {
         this.widgets.splice(index, 1);
     },
+    //Add Widget
     addNewWidget() {
         if (this.widgetType == "numberchart") {
         this.configNc.variable = this.makeid(10);
@@ -923,13 +985,6 @@ export default {
       }
       return result;
     },
-    sendData1() {
-      this.value = !this.value;
-      const toSend = {
-        value: this.value
-      };
-      this.$nuxt.$emit("userId/8888/var1/sdata", toSend);
-    }
   }
 };
 </script>
