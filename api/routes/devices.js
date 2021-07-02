@@ -8,7 +8,9 @@ const axios = require("axios");
                   MODELS                                    
 ============================================
 */
+
 import Device from "../models/device.js";
+import SaverRule from '../models/emqx_saver_rule.js';
 
 /*
 ============================================
@@ -161,10 +163,10 @@ async function selectDevice(userId, dId) {
 */
 //get saver rule
 
-//create saver rule
 async function createSaverRule(userId, dId, status) {
 
-  const url = "http://localhost:8085/api/v4/rules";
+  try {
+    const url = "http://localhost:8085/api/v4/rules";
 
   const topic = userId + "/" + dId + "/+/sdata";
 
@@ -190,21 +192,29 @@ async function createSaverRule(userId, dId, status) {
 
   if(res.status === 200 && res.data.data){
     console.log(res.data.data);
+
+    // Save rule in mongo
+    await SaverRule.create({
+      userId: userId,
+      dId: dId,
+      emqxRuleId: res.data.data.id,
+      status: status
+    });
+
+    return true;
+
+  }else{
+    return false;
   }
 
+  } catch (error) {
+    console.log("Error creating saver rule")
+    console.log(error);
+    return false;
+  }
+
+  
 
 }
-
-//update saver rule
-
-//delete saver rule
 
 module.exports = router;
-
-/*
-userId/dId/temperature -> 
-{
-  value: 21,
-  save: 1
-}
-*/
