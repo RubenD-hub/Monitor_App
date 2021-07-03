@@ -70,10 +70,10 @@ router.post("/device", checkAuth, async (req, res) => {
     newDevice.userId = userId;
     newDevice.createdTime = Date.now();
 
+    await createSaverRule(userId,newDevice.dId, true);
+
     // Save in mongo
     const device = await Device.create(newDevice);
-
-    await createSaverRule(userId,newDevice.dId, true);
 
     await selectDevice(userId, newDevice.dId);
 
@@ -270,7 +270,12 @@ async function updateSaverRuleStatus(emqxRuleId, status) {
 
     if (res.status === 200 && res.data.data) {
       await SaverRule.updateOne({ emqxRuleId: emqxRuleId }, { status: status });
-      console.log("Saver Rule Status Updated...".green);
+      if(status == true){
+        console.log("Saver Rule Status On...".green);
+      }else{
+        console.log("Saver Rule Status Off...".yellow);
+      }
+      
       return true;
     }else{
       return false;
