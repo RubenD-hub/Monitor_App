@@ -104,17 +104,19 @@
 
               <!-- Database saver indicator    -->
               <el-tooltip content="Saver Status Indicator" style="margin-right:10px">
-                  <i class="fas fa-database" :class="{'text-success' : row.saverRule}"></i>
+                  <i class="fas fa-database" :class="{
+                    'text-success': row.saverRule.status,
+                    'text-dark': !row.saverRule.status}"></i>
               </el-tooltip>
 
               <!-- Switch save rule status   -->
               <el-tooltip content="Database Saver">
                 <base-switch
                   color="black"
-                  :value="row.saverRule"
                   on-text="On"
                   off-text="Off"
-                  @click="updateSaverRuleStatus($index)"
+                  @click="updateSaverRuleStatus(row.saverRule)"
+                  :value="row.saverRule.status"
                 ></base-switch>
               </el-tooltip>
 
@@ -136,7 +138,7 @@
     </div>
 
 
-    <Json :value="templates"></Json>
+    <Json :value="$store.state.devices"></Json>
 
   </div>
 </template>
@@ -171,7 +173,84 @@ export default {
     this.getTemplates();
   },
   methods: {
+    updateSaverRuleStatus(rule) {
+      var ruleCopy = JSON.parse(JSON.stringify(rule));
+      ruleCopy.status = !ruleCopy.status;
+
+      const toSend = { 
+        rule: ruleCopy 
+      };
+      const axiosHeaders = {
+        headers: {
+          token: this.$store.state.auth.token
+        }
+      };
+      this.$axios.put("/saver-rule", toSend, axiosHeaders).then(res => {
+        if (res.data.status == "success" && ruleCopy.status == true) {
+            this.$store.dispatch("getDevices");
+            this.$notify({
+              type: "success",
+              icon: "tim-icons icon-check-2",
+              message: " Device Saver Status On"
+            });
+        }
+        if (res.data.status == "success" && ruleCopy.status == false) {
+            this.$store.dispatch("getDevices");
+            this.$notify({
+              type: "warning",
+              icon: "tim-icons icon-check-2",
+              message: " Device Saver Status Off"
+            });
+            }
+
+          return;
+      })
+      .catch(e => {
+        console.log(e);
+        this.$notify({
+          type: "danger",
+          icon: "tim-icons icon-alert-circle-exc",
+          message: " Error updating saver rule status"
+        });
+        return;
+      });
+    },
+
+    deleteDevice(device) {
+      const axiosHeaders = {
+        headers: {
+          token: this.$store.state.auth.accessToken
+        },
+        params: {
+          dId: device.dId
+        }
+      };
+      this.$axios
+        .delete("/device", axiosHeaders)
+        .then(res => {
+          if (res.data.status == "success") {
+            this.$notify({
+              type: "success",
+              icon: "tim-icons icon-check-2",
+              message: device.name + " deleted!"
+            });
+          }
+          $nuxt.$emit("time-to-get-devices");
+          return;
+        })
+        .catch(e => {
+          console.log(e);
+          this.$notify({
+            type: "danger",
+            icon: "tim-icons icon-alert-circle-exc",
+            message: " Error deleting " + device.name
+          });
+          return;
+        });
+    },
+
     //new device
+    
     createNewDevice() {
       if (this.newDevice.name == "") {
         this.$notify({
@@ -292,6 +371,7 @@ export default {
             });
             this.$store.dispatch("getDevices");
           }
+          // return;
           
         })
         .catch(e => {
@@ -301,12 +381,9 @@ export default {
             icon: "tim-icons icon-alert-circle-exc",
             message: " Error deleting " + device.name
           });
+          // return;
         });
     },
-    // Modify the state of the save rule
-    updateSaverRuleStatus(index) {
-      this.devices[index].saverRule = !this.devices[index].saverRule;
-    }
   }
 };
 </script>
