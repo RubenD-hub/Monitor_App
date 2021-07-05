@@ -137,7 +137,7 @@
       </card>
     </div>
 
-
+    <Json :value="$store.state.selectedDevice"></Json>
     <Json :value="$store.state.devices"></Json>
 
   </div>
