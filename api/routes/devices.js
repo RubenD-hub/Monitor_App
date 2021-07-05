@@ -147,20 +147,13 @@ router.put("/device", checkAuth, (req, res) => {
 //SAVER-RULE STATUS UPDATER
 router.put('/saver-rule', checkAuth, async (req, res) => {
 
-
   const rule = req.body.rule;
-
   console.log(rule)
-
   await updateSaverRuleStatus(rule.emqxRuleId, rule.status)
-
   const toSend = {
     status: "success"
   };
-
   res.json(toSend);
-
-
 });
 
 /*
