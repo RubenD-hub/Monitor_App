@@ -38,7 +38,7 @@ router.get("/device", checkAuth, async (req, res) => {
     //get saver rules
     const saverRules = await getSaverRules(userId);
 
-    //saver rules to -> devices
+    // saver rules to -> devices
     devices.forEach((device, index) => {
       devices[index].saverRule = saverRules.filter(saverRule => saverRule.dId == device.dId)[0];
     });
