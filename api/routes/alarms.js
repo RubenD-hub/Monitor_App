@@ -9,7 +9,7 @@ import AlarmRule from '../models/emqx_alarm_rule.js';
 const auth = {
     auth: {
         username: 'admin',
-        password: 'emqxsecret'
+        password: 'public'
     }
 };
 
@@ -98,7 +98,7 @@ async function createAlarmRule(newAlarm) {
 
         const url = "http://localhost:8085/api/v4/rules/" + mongoRule.emqxRuleId;
 
-        const payload_templ = '{"userId":"' + newAlarm.userId + '","dId":"' + newAlarm.dId + '","payload":${payload},"topic":"${topic}","emqxRuleId":"' + mongoRule.emqxRuleId + '","value":' + newAlarm.value + ',"condition":"' + newAlarm.condition + '","variable":"' + newAlarm.variable + '","variableFullName":"' + newAlarm.variableFullName + '","triggerTime":' + newAlarm.triggerTime + '}';
+        const payload_templ = '{"userId":"' + newAlarm.userId + '","dId":"' + newAlarm.dId + '","payload":${payload},"topic":"${topic}","emqxRuleId":"' + mongoRule.emqxRuleId + '","value":' + newAlarm.value + ',"condition":"' + newAlarm.condition + '","variable":"' + newAlarm.variable + '","varFullName":"' + newAlarm.varFullName + '","triggerTime":' + newAlarm.triggerTime + '}';
 
         newRule.actions[0].params.payload_tmpl = payload_templ;
 

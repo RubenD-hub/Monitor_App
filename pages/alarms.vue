@@ -156,45 +156,44 @@ export default {
         return;
       }
       this.newRule.dId = this.$store.state.selectedDevice.dId;
-      this.newRule.varFullName = this.$store.state.selectedDevice.template.widgets[
-        this.selectedWidgetIndex
-      ].varFullName;
-      this.newRule.variable = this.$store.state.selectedDevice.template.widgets[
-        this.selectedWidgetIndex
-      ].variable;
+      this.newRule.varFullName = this.$store.state.selectedDevice.template.widgets[this.selectedWidgetIndex].varFullName;
+      this.newRule.variable = this.$store.state.selectedDevice.template.widgets[this.selectedWidgetIndex].variable;
+      
       const axiosHeaders = {
         headers: {
           token: this.$store.state.auth.token
         }
       };
+
       var toSend = {
         newRule: this.newRule
       };
-      this.$axios.post("/alarm-rule", toSend, axiosHeaders)
-          .then(res => {
+
+      this.$axios.post("/alarm-rule", toSend, axiosHeaders).then(res => {
             
-            if (res.data.status == "success") {
-              
-              this.newRule.variable = null;
-              this.newRule.condition = null;
-              this.newRule.value = null;
-              this.newRule.triggerTime = null;
-              
-              this.$notify({ 
-                type: 'success', 
-                icon: 'tim-icons icon-check-2', 
-                message: 'Success! Alarm Rule was added' });
-              return;
-            }
-          })
-          .catch(e => {
-            this.$notify({ 
-              type: 'danger', 
-              icon: 'tim-icons icon-alert-circle-exc', 
-              message: 'Error' });
-            console.log(e)
-            return;
+        if (res.data.status == "success") {
+          
+          this.newRule.variable = null;
+          this.newRule.condition = null;
+          this.newRule.value = null;
+          this.newRule.triggerTime = null;
+          
+          this.$notify({ 
+            type: 'success', 
+            icon: 'tim-icons icon-check-2', 
+            message: 'Success! Alarm Rule was added' 
           });
+          return;
+        }
+      })
+      .catch(e => {
+        this.$notify({ 
+          type: 'danger', 
+          icon: 'tim-icons icon-alert-circle-exc', 
+          message: 'Error' });
+        console.log(e)
+        return;
+      });
     }
   }
 };
