@@ -11,6 +11,7 @@ const axios = require("axios");
 
 import Device from "../models/device.js";
 import SaverRule from "../models/emqx_saver_rule.js";
+import Template from '../models/template.js';
 
 /*
 ============================================
@@ -38,9 +39,15 @@ router.get("/device", checkAuth, async (req, res) => {
     //get saver rules
     const saverRules = await getSaverRules(userId);
 
+    //get templates
+    const templates = await getTemplates(userId);
+
+    console.log(templates);
+
     // saver rules to -> devices
     devices.forEach((device, index) => {
       devices[index].saverRule = saverRules.filter(saverRule => saverRule.dId == device.dId)[0];
+      devices[index].template = templates.filter(template => template._id == device.templateId)[0];
     });
 
     const toSend = {
@@ -51,6 +58,7 @@ router.get("/device", checkAuth, async (req, res) => {
     res.json(toSend);
   } catch (error) {
     console.log("ERROR GETTING DEVICES");
+    console.log(error)
 
     const toSend = {
       status: "error",
@@ -125,11 +133,11 @@ router.delete("/device", checkAuth, async (req, res) => {
 });
 
 //UPDATE DEVICE (SELECTOR)
-router.put("/device", checkAuth, (req, res) => {
+router.put("/device", checkAuth, async (req, res) => {
   const dId = req.body.dId;
   const userId = req.userData._id;
 
-  if (selectDevice(userId, dId)) {
+  if (await selectDevice(userId, dId)) {
     const toSend = {
       status: "success"
     };
@@ -186,6 +194,16 @@ async function selectDevice(userId, dId) {
 /*
  SAVER RULES FUNCTIONS
 */
+//get templates
+async function getTemplates(userId) {
+  try {
+    const templates = await Template.find({ userId: userId });
+    return templates;
+  } catch (error) {
+    return false;
+  }
+}
+
 //get saver rule
 
 async function getSaverRules(userId) {
