@@ -9,6 +9,7 @@ const colors = require("colors");
 
 import Data from "../models/data.js";
 import Device from "../models/device.js";
+import Notification from "../models/notifications.js";
 
 // ****************************************
 // ********     SAVER WEBHOOK      ********
@@ -52,39 +53,36 @@ router.post("/saver-webhook", async (req, res) => {
 router.post("/alarm-webhook", async (req, res) => {
 
   try {
-
+      
       if (req.headers.token != "121212") {
           req.sendStatus(404);
           return;
         }
+      
+        const incomingAlarm = req.body;
+        
+        console.log(incomingAlarm);
 
-        const data = req.body;
-
-        const splittedTopic = data.topic.split("/");
-        const dId = splittedTopic[1];
-        const variable = splittedTopic[2];
-
-        var result = await Device.find({dId: dId, userId: data.userId});
-
-        if (result.length == 1){
-            Data.create({
-              userId: data.userId,
-              dId: dId,
-              variable: variable,
-              value: data.payload.value,
-              time: Date.now()
-            })
-            console.log("Data created");
-        }
-
+        saveNotifToMongo(incomingAlarm);
+        
         res.sendStatus(200);
-
-
+      
+      
   } catch (error) {
       console.log(error);
       res.sendStatus(200);
   }
 
 });
+
+
+function saveNotifToMongo(incomingAlarm) {
+
+  var newNotif = incomingAlarm;
+  newNotif.time = Date.now();
+  newNotif.readed = false;
+  Notification.create(newNotif);
+
+}
 
 module.exports = router; 
