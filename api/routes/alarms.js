@@ -143,7 +143,7 @@ async function createAlarmRule(newAlarm) {
 
         const url = "http://localhost:8085/api/v4/rules/" + mongoRule.emqxRuleId;
 
-        const payload_templ = '{"userId":"' + newAlarm.userId + '","dId":"' + newAlarm.dId + '","payload":${payload},"topic":"${topic}","emqxRuleId":"' + mongoRule.emqxRuleId + '","value":' + newAlarm.value + ',"condition":"' + newAlarm.condition + '","variable":"' + newAlarm.variable + '","varFullName":"' + newAlarm.varFullName + '","triggerTime":' + newAlarm.triggerTime + '}';
+        const payload_templ = '{"userId":"' + newAlarm.userId + '","dId":"' + newAlarm.dId + '","deviceName":"' + newAlarm.deviceName + '","payload":${payload},"topic":"${topic}","emqxRuleId":"' + mongoRule.emqxRuleId + '","value":' + newAlarm.value + ',"condition":"' + newAlarm.condition + '","variable":"' + newAlarm.variable + '","varFullName":"' + newAlarm.varFullName + '","triggerTime":' + newAlarm.triggerTime + '}';
 
         newRule.actions[0].params.payload_tmpl = payload_templ;
 
