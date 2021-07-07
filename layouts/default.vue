@@ -152,6 +152,7 @@
             return;
           }
           console.log("Device subscription Success");
+          console.log(deviceSubscribeTopic); 
         });
         //NOTIF SUBSCRIBE
         this.client.subscribe(notifSubscribeTopic, {qos:0}, (err) => {
@@ -160,6 +161,7 @@
             return;
           }
           console.log("Notif subscription Success");
+          console.log(notifSubscribeTopic);
         });
       });
       this.client.on('error', error => {
@@ -167,6 +169,23 @@
       })
       this.client.on("reconnect", (error) => {
           console.log("reconnecting:", error);
+      });
+      this.client.on('message', (topic, message) => {
+        console.log("Message from topic " + topic + " -> ");
+        console.log(message.toString());
+        try {
+          const splittedTopic = topic.split("/");
+          const msgType = splittedTopic[3];
+          if(msgType == "notif"){
+            this.$notify({ type: 'danger', icon: 'tim-icons icon-alert-circle-exc', message: message.toString()});
+            this.$store.dispatch("getNotifications");
+            return;
+          }else if (msgType == "sdata"){
+          }
+        } catch (error) {
+          console.log(error);
+        }
+        
       });
     
     },
@@ -191,6 +210,7 @@
       }
     },
     mounted() {
+      this.$store.dispatch("getNotifications");
       this.initScrollbar();
       this.startMqttClient();
     }
