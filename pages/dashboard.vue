@@ -1,9 +1,9 @@
 <template>
-    <div>
-    <h2>
-      Dashboard
-    </h2>
+    
+  <div>
+      Dash
   </div>
+
 </template>
 
 <script>
