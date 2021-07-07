@@ -7,13 +7,10 @@
         <i class="fa " :class="[config.icon, getIconColorClass()]" style="font-size: 30px"></i>
 
         <!-- Button -->  
-        <base-button @click="sendValue()" simple :type="config.class" class="mb-3" size="sm">
-              <i class="tim-icons icon-double-right"></i> Add
+        <base-button  @click="sendValue()" simple :type="config.class" class="mb-3 pull-right" size="sm">
+            <i class="tim-icons icon-double-right"></i>{{config.text}}
         </base-button>
-          
-          
         
-
     </card>
 </template>
 

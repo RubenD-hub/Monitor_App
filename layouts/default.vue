@@ -116,7 +116,11 @@
         return this.$route.path === '/maps/full-screen'
       }
     },
+    beforeDestroy(){
+    this.$nuxt.$off("mqtt-sender");
+    },
     methods: {
+
       startMqttClient() {
       const options = {
         host: "localhost",
@@ -182,7 +186,7 @@
             this.$notify({ type: 'danger', icon: 'tim-icons icon-alert-circle-exc', message: message.toString()});
             this.$store.dispatch("getNotifications");
             return;
-            
+
           }else if (msgType == "sdata"){
             $nuxt.$emit(topic, JSON.parse(message.toString()));
             return;
@@ -191,6 +195,9 @@
           console.log(error);
         }
         
+      });
+      $nuxt.$on('mqtt-sender', (toSend) => {
+        this.client.publish(toSend.topic, JSON.stringify(toSend.msg));
       });
     
     },
