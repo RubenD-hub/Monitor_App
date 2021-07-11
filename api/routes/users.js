@@ -114,9 +114,6 @@ router.post("/getmqttcredentials", checkAuth,  async (req, res) => {
   
       return res.status(500).json(toSend);
     }
-  
-  
-  
   });
   
   
