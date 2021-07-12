@@ -29,47 +29,80 @@ var client;
 ============================================
 */
 
+var ex = {
+  username: 'superuser',
+  password: 'superuser',
+  topic: '5ffcc00149fdcf311a4de607/22222/',
+  variables: [
+    {
+      variable: '6hRtQGSFIl',
+      variableFullName: 'Temperature',
+      variableType: 'input',
+      variableSendFreq: 10
+    },
+    {
+      variable: 'byTmALXl2Y',
+      variableFullName: 'Humidity',
+      variableType: 'input',
+      variableSendFreq: 5
+    },
+    {
+      variable: 'PMHPI0zBNQ',
+      variableFullName: 'Pump',
+      variableType: 'output',
+      variableSendFreq: undefined
+    },
+    {
+      variable: 'yvFApiNOqz',
+      variableFullName: 'Fan',
+      variableType: 'output',
+      variableSendFreq: undefined
+    }
+  ]
+}
+
 //DEVICE CREDENTIALS WEBHOOK
 router.post("/getdevicecredentials", async (req, res) => {
 
   console.log(req.body);
+  const dId = req.body.dId;
 
+  const device = await Device.findOne({ dId: dId });
+
+  const userId = device.userId;
+
+  var credentials = await getDeviceMqttCredentials(dId, userId);
+
+  var template = await Template.findOne({ _id: device.templateId });
+
+  console.log(template);
+
+  var variables = [];
+
+  template.widgets.forEach(widget => {
+
+    var v = (({variable, variableFullName, variableType, variableSendFreq }) => ({
+      variable,
+      variableFullName,
+      variableType,
+      variableSendFreq
+    }))(widget);
+
+    variables.push(v);
+  });
 
   const toSend = {
-    username: "superuser",
-    password: "superuser",
-    topic: "userid/did/",
-    variables: [
-      {
-        variable:"var1",
-        variableFullName: "Temp",
-        variableType: "input",
-        variableFreq: 1,
-      },
-      {
-        variable:"var2",
-        variableFullName: "Hum",
-        variableType: "input",
-        variableFreq: 1,
-      },
-      {
-        variable:"var3",
-        variableFullName: "Pump",
-        variableType: "output",
-      },
-      {
-        variable:"var4",
-        variableFullName: "Fan1",
-        variableType: "output",
-
-      },
-    ]
+    username: credentials.username,
+    password: credentials.password,
+    topic: userId + "/" + dId + "/",
+    variables: variables
   };
-
-  console.log(toSend);
-
   res.json(toSend);
 
+  setTimeout(() => {
+    getDeviceMqttCredentials(dId, userId);
+    console.log("Device Credentials Updated");
+  }, 30000);
 });
 
 // ****************************************
@@ -220,6 +253,67 @@ router.put("/notifications", checkAuth, async (req, res) => {
 ============================================
 */
 
+async function getDeviceMqttCredentials(dId, userId) {
+  try {
+    var rule = await EmqxAuthRule.find({
+      type: "device",
+      userId: userId,
+      dId: dId
+    });
+
+    if (rule.length == 0) {
+      const newRule = {
+        userId: userId,
+        username: makeid(10),
+        password: makeid(10),
+        publish: [userId + "/" + dId + "/+/sdata"],
+        subscribe: [userId + "/" + dId + "/+/actdata"],
+        type: "device",
+        time: Date.now(),
+        updatedTime: Date.now()
+      };
+
+      const result = await EmqxAuthRule.create(newRule);
+
+      const toReturn = {
+        username: result.username,
+        password: result.password
+      };
+
+      return toReturn;
+    }
+
+    const newUserName = makeid(10);
+    const newPassword = makeid(10);
+
+    const result = await EmqxAuthRule.updateOne(
+      { type: "device", dId: dId },
+      {
+        $set: {
+          username: newUserName,
+          password: newPassword,
+          updatedTime: Date.now()
+        }
+      }
+    );
+
+    // update response example
+    //{ n: 1, nModified: 1, ok: 1 }
+
+    if (result.n == 1 && result.ok == 1) {
+      return {
+        username: newUserName,
+        password: newPassword
+      };
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+}
+
 function startMqttClient(){
 
   const options = {
@@ -296,6 +390,17 @@ async function updateAlarmCounter(emqxRuleId) {
     console.log(error)
     return false;
   }
+}
+
+function makeid(length) {
+  var result = "";
+  var characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  var charactersLength = characters.length;
+  for (var i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
 }
 
 setTimeout(() => {
