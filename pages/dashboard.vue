@@ -7,7 +7,7 @@
       :class="[widget.column]"
       
     >
-
+    
     <Json :value="fixWidget(widget)"></Json>
 
       <Rtnumberchart
@@ -51,6 +51,10 @@ export default {
       widgetCopy.selectDevice.name = this.$store.state.selectedDevice.name;
       widgetCopy.userId = this.$store.state.selectedDevice.userId;
       
+      if (widget.widget =="numberchart"){
+        widgetCopy.demo = false;
+      }
+
       return widgetCopy;
     }
   }

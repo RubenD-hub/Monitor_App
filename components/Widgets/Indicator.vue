@@ -15,7 +15,7 @@
         props: ['config'],
         data(){
             return {
-                value: true,
+                value: false,
                 
             }
         },
