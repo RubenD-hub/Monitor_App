@@ -95,6 +95,9 @@
           <!-- Id column   -->
           <el-table-column prop="dId" label="Device-Id"></el-table-column>
 
+          <!-- Password column   -->
+          <el-table-column prop="password" label="Password"></el-table-column>
+
           <!-- Template column   -->
           <el-table-column prop="templateName" label="Template"></el-table-column>
 

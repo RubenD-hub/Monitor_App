@@ -83,6 +83,8 @@ router.post("/device", checkAuth, async (req, res) => {
     newDevice.userId = userId;
     newDevice.createdTime = Date.now();
 
+    newDevice.password = makeid(10);
+
     await createSaverRule(userId,newDevice.dId, true);
 
     // Save in mongo
@@ -330,4 +332,16 @@ async function deleteSaverRule(dId) {
     return false;
   }
 }
+
+function makeid(length) {
+  var result = "";
+  var characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  var charactersLength = characters.length;
+  for (var i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+}
+
     module.exports = router;

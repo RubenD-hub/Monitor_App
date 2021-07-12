@@ -16,8 +16,10 @@ var mqtt = require("mqtt");
 
 import Data from "../models/data.js";
 import Device from "../models/device.js";
+import EmqxAuthRule from "../models/emqx_auth.js";
 import Notification from "../models/notifications.js";
 import AlarmRule from "../models/emqx_alarm_rule.js";
+import Template from "../models/template.js";
 
 var client;
 
@@ -26,6 +28,49 @@ var client;
                   API                                    
 ============================================
 */
+
+//DEVICE CREDENTIALS WEBHOOK
+router.post("/getdevicecredentials", async (req, res) => {
+
+  console.log(req.body);
+
+
+  const toSend = {
+    username: "superuser",
+    password: "superuser",
+    topic: "userid/did/",
+    variables: [
+      {
+        variable:"var1",
+        variableFullName: "Temp",
+        variableType: "input",
+        variableFreq: 1,
+      },
+      {
+        variable:"var2",
+        variableFullName: "Hum",
+        variableType: "input",
+        variableFreq: 1,
+      },
+      {
+        variable:"var3",
+        variableFullName: "Pump",
+        variableType: "output",
+      },
+      {
+        variable:"var4",
+        variableFullName: "Fan1",
+        variableType: "output",
+
+      },
+    ]
+  };
+
+  console.log(toSend);
+
+  res.json(toSend);
+
+});
 
 // ****************************************
 // ********     SAVER WEBHOOK      ********
@@ -189,7 +234,7 @@ function startMqttClient(){
       protocolVersion: 3,
       clean: true,
       encoding: 'utf8'
-  }
+  };
 
   client = mqtt.connect ('mqtt://' + 'localhost', options);
 

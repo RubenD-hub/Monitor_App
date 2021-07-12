@@ -81,6 +81,15 @@
 
               <br />
 
+              <!-- SendFreq option -->
+              <base-input
+                v-model.number="configNc.variableSendFreq"
+                label="Send Freq"
+                type="number"
+              ></base-input>
+
+              <br />
+
               <!-- Back time option -->
               <base-input
                 v-model.number="configNc.chartTimeAgo"
@@ -478,6 +487,15 @@
 
               <br />
 
+              <!-- SendFreq option -->
+              <base-input
+                v-model.number="configIndicator.variableSendFreq"
+                label="Send Freq"
+                type="number"
+              ></base-input>
+
+              <br />
+
               <!-- Themes option -->
               <el-select
                 v-model="configIndicator.class"
@@ -798,6 +816,8 @@ export default {
         },
         varFullName: "temperature",
         variable: "varname",
+        variableType: "input",
+        variableSendFreq: "30",
         unit: "Watts",
         class: "success",
         column: "col-12",
@@ -816,6 +836,7 @@ export default {
         },
         varFullName: "Luz",
         variable: "varname",
+        variableType: "output",
         class: "danger",
         widget: "switch",
         icon: "fa-bath",
@@ -826,15 +847,19 @@ export default {
         userId: "userid",
         selectDevice: {
           name: "Home",
-          dId: "8888"
+          dId: "8888",
+          templateName: "Power Sensor",
+          templateId: "984237562348756ldksjfh",
+          saverRule: false
         },
-        varFullName: "temperature",
-        text: "send",
-        message: "testing123",
-        variable: "varname",
+        varFullName: "Pump",
+        variable: "var1",
+        variableType: "output",
+        icon: "fa-sun",
+        column: "col-4",
         widget: "button",
-        icon: "fa-bath",
-        column: "col-6"
+        class: "danger",
+        message: "{'fanstatus': 'stop'}"
       },
 
       configIndicator: {
@@ -845,6 +870,8 @@ export default {
         },
         varFullName: "temperature",
         variable: "varname",
+        variableType: "input",
+        variableSendFreq: "30",
         class: "success",
         widget: "indicator",
         icon: "fa-bath",
