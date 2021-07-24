@@ -121,7 +121,7 @@ export default {
       handler() {
         setTimeout(() => {
           this.value = 0;
-          this.$nuxt.$off(this.topic + "/sdata", this.procesReceivedData);
+          this.$nuxt.$off(this.topic + "/sdata");
           this.topic =
             this.config.userId +
             "/" +
@@ -145,7 +145,7 @@ export default {
     this.updateColorClass();
   },
   beforeDestroy() {
-    this.$nuxt.$off(this.topic + "/sdata", this.procesReceivedData);
+    this.$nuxt.$off(this.topic + "/sdata");
   },
   methods: {
     updateColorClass() {
