@@ -30,40 +30,39 @@ var client;
 */
 
 var ex = {
-  username: 'superuser',
-  password: 'superuser',
-  topic: '5ffcc00149fdcf311a4de607/22222/',
+  username: "superuser",
+  password: "superuser",
+  topic: "5ffcc00149fdcf311a4de607/22222/",
   variables: [
     {
-      variable: '6hRtQGSFIl',
-      variableFullName: 'Temperature',
-      variableType: 'input',
+      variable: "6hRtQGSFIl",
+      variableFullName: "Temperature",
+      variableType: "input",
       variableSendFreq: 10
     },
     {
-      variable: 'byTmALXl2Y',
-      variableFullName: 'Humidity',
-      variableType: 'input',
+      variable: "byTmALXl2Y",
+      variableFullName: "Humidity",
+      variableType: "input",
       variableSendFreq: 5
     },
     {
-      variable: 'PMHPI0zBNQ',
-      variableFullName: 'Pump',
-      variableType: 'output',
+      variable: "PMHPI0zBNQ",
+      variableFullName: "Pump",
+      variableType: "output",
       variableSendFreq: undefined
     },
     {
-      variable: 'yvFApiNOqz',
-      variableFullName: 'Fan',
-      variableType: 'output',
+      variable: "yvFApiNOqz",
+      variableFullName: "Fan",
+      variableType: "output",
       variableSendFreq: undefined
     }
   ]
-}
+};
 
 //DEVICE CREDENTIALS WEBHOOK
 router.post("/getdevicecredentials", async (req, res) => {
-
   console.log(req.body);
   const dId = req.body.dId;
 
@@ -86,10 +85,9 @@ router.post("/getdevicecredentials", async (req, res) => {
   var variables = [];
 
   template.widgets.forEach(widget => {
-
-    var v = (({variable, variableFullName, variableType, variableSendFreq }) => ({
+    var v = (({ variable, varFullName, variableType, variableSendFreq }) => ({
       variable,
-      variableFullName,
+      varFullName,
       variableType,
       variableSendFreq
     }))(widget);
@@ -115,142 +113,129 @@ router.post("/getdevicecredentials", async (req, res) => {
 // ********     SAVER WEBHOOK      ********
 // ****************************************
 router.post("/saver-webhook", async (req, res) => {
-
-    try {
-        if (req.headers.token != "121212") {
-            req.sendStatus(404);
-            return;
-          }
-
-          const data = req.body;
-
-          const splittedTopic = data.topic.split("/");
-          const dId = splittedTopic[1];
-          const variable = splittedTopic[2];
-
-          var result = await Device.find({dId: dId, userId: data.userId});
-
-          if (result.length == 1){
-              Data.create({
-                userId: data.userId,
-                dId: dId,
-                variable: variable,
-                value: data.payload.value,
-                time: Date.now()
-              })
-              console.log("Data created");
-          }
-
-          res.sendStatus(200);
-
-
-    } catch (error) {
-        console.log(error);
-        res.sendStatus(200);
+  try {
+    if (req.headers.token != "121212") {
+      req.sendStatus(404);
+      return;
     }
+
+    const data = req.body;
+
+    const splittedTopic = data.topic.split("/");
+    const dId = splittedTopic[1];
+    const variable = splittedTopic[2];
+
+    var result = await Device.find({ dId: dId, userId: data.userId });
+
+    if (result.length == 1) {
+      Data.create({
+        userId: data.userId,
+        dId: dId,
+        variable: variable,
+        value: data.payload.value,
+        time: Date.now()
+      });
+      console.log("Data created");
+    }
+
+    res.sendStatus(200);
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(200);
+  }
 });
 
 //ALARMS WEBHOOK
 router.post("/alarm-webhook", async (req, res) => {
-
   try {
-      
-      if (req.headers.token != "121212") {
-          req.sendStatus(404);
-          return;
-        }
+    if (req.headers.token != "121212") {
+      req.sendStatus(404);
+      return;
+    }
 
-        res.sendStatus(200);
-      
-        const incomingAlarm = req.body;
+    res.sendStatus(200);
 
-        updateAlarmCounter(incomingAlarm.emqxRuleId);
-        
-        const lastNotif = await Notification.find({ dId: incomingAlarm.dId, emqxRuleId: incomingAlarm.emqxRuleId }).sort({ time: -1 }).limit(1);
+    const incomingAlarm = req.body;
 
-        if (lastNotif == 0){
-          console.log("FIRST TIME ALARM");
-          saveNotifToMongo(incomingAlarm);
-          sendMqttNotif(incomingAlarm);
+    updateAlarmCounter(incomingAlarm.emqxRuleId);
 
-        }else{
+    const lastNotif = await Notification.find({
+      dId: incomingAlarm.dId,
+      emqxRuleId: incomingAlarm.emqxRuleId
+    })
+      .sort({ time: -1 })
+      .limit(1);
 
-          const lastNotifToNowMins = ( Date.now() - lastNotif[0].time ) / 1000 / 60;
+    if (lastNotif == 0) {
+      console.log("FIRST TIME ALARM");
+      saveNotifToMongo(incomingAlarm);
+      sendMqttNotif(incomingAlarm);
+    } else {
+      const lastNotifToNowMins = (Date.now() - lastNotif[0].time) / 1000 / 60;
 
-          if (lastNotifToNowMins > incomingAlarm.triggerTime){
-            console.log("TRIGGERED");
-            saveNotifToMongo(incomingAlarm);
-            sendMqttNotif(incomingAlarm);
-          }
-
-        }
-      
-      
+      if (lastNotifToNowMins > incomingAlarm.triggerTime) {
+        console.log("TRIGGERED");
+        saveNotifToMongo(incomingAlarm);
+        sendMqttNotif(incomingAlarm);
+      }
+    }
   } catch (error) {
-      console.log(error);
-      res.sendStatus(200);
+    console.log(error);
+    res.sendStatus(200);
   }
-
 });
 
 //GET NOTIFICATIONS
 router.get("/notifications", checkAuth, async (req, res) => {
-
   try {
-      const userId = req.userData._id;
-      const notifications = await getNotifications(userId);
+    const userId = req.userData._id;
+    const notifications = await getNotifications(userId);
 
-      const toSend = {
-          status: "success",
-          data: notifications
-      };
-      res.json(toSend);
-
+    const toSend = {
+      status: "success",
+      data: notifications
+    };
+    res.json(toSend);
   } catch (error) {
+    console.log("ERROR GETTING NOTIFICATIONS");
+    console.log(error);
 
-      console.log("ERROR GETTING NOTIFICATIONS");
-      console.log(error)
+    const toSend = {
+      status: "error",
+      error: error
+    };
 
-      const toSend = {
-        status: "error",
-        error: error
-      };
-
-      return res.status(500).json(toSend);
-
+    return res.status(500).json(toSend);
   }
-
 });
 
 //UPDATE NOTIFICATION (readed status)
 router.put("/notifications", checkAuth, async (req, res) => {
-
   try {
-      const userId = req.userData._id;
+    const userId = req.userData._id;
 
-      const notificationId = req.body.notifId;
+    const notificationId = req.body.notifId;
 
-      await Notification.updateOne({userId: userId, _id: notificationId},{readed: true});
+    await Notification.updateOne(
+      { userId: userId, _id: notificationId },
+      { readed: true }
+    );
 
-      const toSend = {
-          status: "success",
-      };
-      res.json(toSend);
-
+    const toSend = {
+      status: "success"
+    };
+    res.json(toSend);
   } catch (error) {
+    console.log("ERROR UPDATING NOTIFICATION STATUS");
+    console.log(error);
 
-      console.log("ERROR UPDATING NOTIFICATION STATUS");
-      console.log(error)
+    const toSend = {
+      status: "error",
+      error: error
+    };
 
-      const toSend = {
-        status: "error",
-        error: error
-      };
-
-      return res.status(500).json(toSend);
-
+    return res.status(500).json(toSend);
   }
-
 });
 
 /*
@@ -320,80 +305,83 @@ async function getDeviceMqttCredentials(dId, userId) {
   }
 }
 
-function startMqttClient(){
-
+function startMqttClient() {
   const options = {
-      port: 1883,
-      host: 'localhost',
-      clientId: 'webhook_superuser' + Math.round(Math.random() * (0 - 10000) * -1),
-      username: 'superuser',
-      password: 'superuser',
-      keepalive: 60,
-      reconnectPeriod: 5000,
-      protocolId: 'MQIsdp',
-      protocolVersion: 3,
-      clean: true,
-      encoding: 'utf8'
+    port: 1883,
+    host: "localhost",
+    clientId:
+      "webhook_superuser" + Math.round(Math.random() * (0 - 10000) * -1),
+    username: "superuser",
+    password: "superuser",
+    keepalive: 60,
+    reconnectPeriod: 5000,
+    protocolId: "MQIsdp",
+    protocolVersion: 3,
+    clean: true,
+    encoding: "utf8"
   };
 
-  client = mqtt.connect ('mqtt://' + 'localhost', options);
+  client = mqtt.connect("mqtt://" + "localhost", options);
 
-  client.on('connect', function () {
-      console.log("MQTT CONNECTION -> SUCCESS;".green);
-      console.log("\n");
+  client.on("connect", function() {
+    console.log("MQTT CONNECTION -> SUCCESS;".green);
+    console.log("\n");
   });
 
-  client.on('reconnect', (error) => {
-      console.log('RECONNECTING MQTT');
-      console.log(error)
+  client.on("reconnect", error => {
+    console.log("RECONNECTING MQTT");
+    console.log(error);
   });
 
-  client.on('error', (error) => {
-      console.log("MQTT CONNECIONT FAIL -> ");
-      console.log(error)
+  client.on("error", error => {
+    console.log("MQTT CONNECIONT FAIL -> ");
+    console.log(error);
   });
-
-
 }
 
-
-function sendMqttNotif(notif){
-  const topic = notif.userId + '/dummy-did/dummy-var/notif';
-  const msg = 'The rule: when the ' + notif.varFullName + ' is ' + notif.condition + ' than ' + notif.value;
+function sendMqttNotif(notif) {
+  const topic = notif.userId + "/dummy-did/dummy-var/notif";
+  const msg =
+    "The rule: when the " +
+    notif.varFullName +
+    " is " +
+    notif.condition +
+    " than " +
+    notif.value;
   client.publish(topic, msg);
 }
 
 //GET ALL NOT READED NOTIFICATIONS
-async function getNotifications(userId){
+async function getNotifications(userId) {
   try {
-      const res = await Notification.find({userId: userId, readed: false});
-      return res;
+    const res = await Notification.find({ userId: userId, readed: false });
+    return res;
   } catch (error) {
-      console.log(error);
-      return false;     
+    console.log(error);
+    return false;
   }
 }
 
 function saveNotifToMongo(incomingAlarm) {
-
   try {
-      var newNotif = incomingAlarm;
-      newNotif.time = Date.now();
-      newNotif.readed = false;
-      Notification.create(newNotif); 
+    var newNotif = incomingAlarm;
+    newNotif.time = Date.now();
+    newNotif.readed = false;
+    Notification.create(newNotif);
   } catch (error) {
-      console.log(error)
-      return false;
+    console.log(error);
+    return false;
   }
-
 }
 
 async function updateAlarmCounter(emqxRuleId) {
-
   try {
-    await AlarmRule.updateOne({ emqxRuleId: emqxRuleId }, { $inc: { counter: 1 } });
+    await AlarmRule.updateOne(
+      { emqxRuleId: emqxRuleId },
+      { $inc: { counter: 1 } }
+    );
   } catch (error) {
-    console.log(error)
+    console.log(error);
     return false;
   }
 }

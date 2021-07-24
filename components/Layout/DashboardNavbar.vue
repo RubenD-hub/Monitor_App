@@ -20,14 +20,13 @@
     </div>
 
     <ul class="navbar-nav" :class="$rtl.isRTL ? 'mr-auto' : 'ml-auto'">
-      
       <el-select
         class="select-success"
         placeholder="Select Device"
         @change="selectDevice()"
         v-model="selectedDevice"
       >
-      <el-option
+        <el-option
           v-for="(device, index) in $store.state.devices"
           :value="index"
           :label="device.name"
@@ -45,25 +44,33 @@
         class="nav-item"
       >
         <template slot="title">
-          <div v-if="$store.state.notifications.length > 0" class="notification d-none d-lg-block d-xl-block"></div>
+          <div
+            v-if="$store.state.notifications.length > 0"
+            class="notification d-none d-lg-block d-xl-block"
+          ></div>
           <i class="tim-icons icon-sound-wave"></i>
-          <p class="d-lg-none"> Notifications</p>
+          <p class="d-lg-none">Notifications</p>
         </template>
         <li v-if="$store.state.notifications.length == 0">
           <a style="color:orangered" class="nav-item dropdown-item">
-          No Notifications
+            No Notifications
           </a>
         </li>
-        <li  @click="notificationReaded(notification._id)" v-for="notification in $store.state.notifications" class="nav-link" :key="notification._id">
+        <li
+          @click="notificationReaded(notification._id)"
+          v-for="notification in $store.state.notifications"
+          class="nav-link"
+          :key="notification._id"
+        >
           <a href="#" class="nav-item dropdown-item">
-            <b style="color:orangered">{{ unixToDate(notification.time)}}</b>
-              <div style="margin-left:50px">
-                <b>Device: </b> {{notification.deviceName}} <br>
-                <b>Variable: </b> {{notification.varFullName}} <br>
-                <b>Condition: </b> {{notification.condition}} <br>
-                <b>Limit: </b> {{notification.value}} <br>
-                <b>Value: </b> {{notification.payload.value}}
-              </div>    
+            <b style="color:orangered">{{ unixToDate(notification.time) }}</b>
+            <div style="margin-left:50px">
+              <b>Device: </b> {{ notification.deviceName }} <br />
+              <b>Variable: </b> {{ notification.varFullName }} <br />
+              <b>Condition: </b> {{ notification.condition }} <br />
+              <b>Limit: </b> {{ notification.value }} <br />
+              <b>Value: </b> {{ notification.payload.value }}
+            </div>
           </a>
         </li>
       </base-dropdown>
@@ -78,19 +85,12 @@
         menu-classes="dropdown-navbar"
       >
         <template slot="title">
-          <div class="photo"><img src="img/mike.jpg" /></div>
+          <div class="photo"><img src="img/medic.jpg" /></div>
           <b class="caret d-none d-lg-block d-xl-block"></b>
           <p class="d-lg-none">Log out</p>
         </template>
         <li class="nav-link">
-          <a href="#" class="nav-item dropdown-item">Profile</a>
-        </li>
-        <li class="nav-link">
-          <a href="#" class="nav-item dropdown-item">Settings</a>
-        </li>
-        <div class="dropdown-divider"></div>
-        <li class="nav-link">
-          <a href="#" class="nav-item dropdown-item">Log out</a>
+          <a href="#" class="nav-item dropdown-item"><b>Log out</b></a>
         </li>
       </base-dropdown>
     </ul>
@@ -135,11 +135,11 @@ export default {
     this.$store.dispatch("getDevices");
     this.$nuxt.$on("selectedDeviceIndex", this.updateSelectedDeviceIndex);
   },
-  beforeDestroy(){
+  beforeDestroy() {
     this.$nuxt.$off("selectedDeviceIndex");
   },
   methods: {
-    updateSelectedDeviceIndex(index){
+    updateSelectedDeviceIndex(index) {
       this.selectedDevice = index;
     },
     notificationReaded(notifId) {
@@ -148,12 +148,13 @@ export default {
           token: this.$store.state.auth.token
         }
       };
-      var auto
+      var auto;
       const toSend = {
         notifId: notifId
       };
-      this.$axios.put("/notifications", toSend, axiosHeaders).then(res => {
-         
+      this.$axios
+        .put("/notifications", toSend, axiosHeaders)
+        .then(res => {
           this.$store.dispatch("getNotifications");
         })
         .catch(e => {
@@ -171,9 +172,9 @@ export default {
       const toSend = {
         dId: device.dId
       };
-      this.$axios.put("/device", toSend, axiosHeaders)
+      this.$axios
+        .put("/device", toSend, axiosHeaders)
         .then(res => {
-         
           this.$store.dispatch("getDevices");
         })
         .catch(e => {
@@ -183,28 +184,28 @@ export default {
     },
     //UNIX A FECHA
     unixToDate(ms) {
-        var d = new Date(parseInt(ms)), 
-          yyyy = d.getFullYear(),
-          mm = ('0' + (d.getMonth() + 1)).slice(-2), // Months are zero based. Add leading 0.
-          dd = ('0' + d.getDate()).slice(-2), // Add leading 0.
-          hh = d.getHours(),
-          h = hh,
-          min = ('0' + d.getMinutes()).slice(-2), // Add leading 0.
-          ampm = 'AM',
-          time;
-        if (hh > 12) {
-          h = hh - 12;
-          ampm = 'PM';
-        } else if (hh === 12) {
-          h = 12;
-          ampm = 'PM';
-        } else if (hh == 0) {
-          h = 12;
-        }
-        // ie: 2013-02-18, 8:35 AM	
-        time = dd + '/' + mm + '/' + yyyy + ', ' + h + ':' + min + ' ' + ampm;
-        return time;
-      },
+      var d = new Date(parseInt(ms)),
+        yyyy = d.getFullYear(),
+        mm = ("0" + (d.getMonth() + 1)).slice(-2), // Months are zero based. Add leading 0.
+        dd = ("0" + d.getDate()).slice(-2), // Add leading 0.
+        hh = d.getHours(),
+        h = hh,
+        min = ("0" + d.getMinutes()).slice(-2), // Add leading 0.
+        ampm = "AM",
+        time;
+      if (hh > 12) {
+        h = hh - 12;
+        ampm = "PM";
+      } else if (hh === 12) {
+        h = 12;
+        ampm = "PM";
+      } else if (hh == 0) {
+        h = 12;
+      }
+      // ie: 2013-02-18, 8:35 AM
+      time = dd + "/" + mm + "/" + yyyy + ", " + h + ":" + min + " " + ampm;
+      return time;
+    },
     capitalizeFirstLetter(string) {
       if (!string || typeof string !== "string") {
         return "";

@@ -2,10 +2,10 @@
   <div class="sidebar" :data="backgroundColor">
     <div class="sidebar-wrapper" ref="sidebarScrollArea">
       <div class="logo">
-        <a href="http://www.creative-tim.com" class="simple-text logo-mini">
+        <a href="" class="simple-text logo-mini">
           <img :src="logo" alt="app-logo" />
         </a>
-        <a href="http://www.creative-tim.com" class="simple-text logo-normal">
+        <a href="" class="simple-text logo-normal">
           {{ title }}
         </a>
       </div>
@@ -25,38 +25,33 @@
 </template>
 <script>
 export default {
-  name: 'sidebar',
+  name: "sidebar",
   props: {
     title: {
       type: String,
-      default: 'Creative Tim',
-      description: 'Sidebar title'
+      default: "Creative Tim",
+      description: "Sidebar title"
     },
     shortTitle: {
       type: String,
-      default: 'CT',
-      description: 'Sidebar short title'
+      default: "CT",
+      description: "Sidebar short title"
     },
     logo: {
       type: String,
-      default: 'http://demos.creative-tim.com/nuxt-black-dashboard-pro/img/icon-nuxt.svg',
-      description: 'Sidebar app logo'
+      default:
+        "http://demos.creative-tim.com/nuxt-black-dashboard-pro/img/icon-nuxt.svg",
+      description: "Sidebar app logo"
     },
     backgroundColor: {
       type: String,
-      default: 'vue',
+      default: "vue",
       validator: value => {
-        let acceptedValues = [
-          '',
-          'vue',
-          'blue',
-          'green',
-          'primary'
-        ];
+        let acceptedValues = ["", "vue", "blue", "green", "primary"];
         return acceptedValues.indexOf(value) !== -1;
       },
       description:
-        'Sidebar background color (vue|blue|green|orange|red|primary)'
+        "Sidebar background color (vue|blue|green|orange|red|primary)"
     },
     sidebarLinks: {
       type: Array,
@@ -68,7 +63,7 @@ export default {
       type: Boolean,
       default: true,
       description:
-        'Whether sidebar should autoclose on mobile when clicking an item'
+        "Whether sidebar should autoclose on mobile when clicking an item"
     }
   },
   provide() {
