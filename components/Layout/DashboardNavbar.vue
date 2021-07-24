@@ -87,10 +87,12 @@
         <template slot="title">
           <div class="photo"><img src="img/medic.jpg" /></div>
           <b class="caret d-none d-lg-block d-xl-block"></b>
-          <p class="d-lg-none">Log out</p>
+          <p @click="logOut()" class="d-lg-none">Log out</p>
         </template>
         <li class="nav-link">
-          <a href="#" class="nav-item dropdown-item"><b>Log out</b></a>
+          <a href="#" @click="logOut()" class="nav-item dropdown-item"
+            >Log out</a
+          >
         </li>
       </base-dropdown>
     </ul>
@@ -161,6 +163,13 @@ export default {
           console.log(e);
           return;
         });
+    },
+    logOut() {
+      console.log("logout");
+      localStorage.clear();
+      const auth = {};
+      this.$store.commit("setAuth", auth);
+      window.location.href = "/login";
     },
     selectDevice() {
       const device = this.$store.state.devices[this.selectedDevice];
