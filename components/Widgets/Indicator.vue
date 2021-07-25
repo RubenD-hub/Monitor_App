@@ -60,9 +60,13 @@ export default {
   },
   methods: {
     processReceivedData(data) {
-      console.log("received");
-      console.log(data);
-      this.value = data.value;
+      try {
+        console.log("received");
+        console.log(data);
+        this.value = data.value;
+      } catch (error) {
+        console.log(error);
+      }
     },
     getIconColorClass() {
       if (!this.value) {

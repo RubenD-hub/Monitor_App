@@ -237,14 +237,18 @@ export default {
     },
 
     procesReceivedData(data) {
-      this.time = Date.now();
-      this.value = data.value;
+      try {
+        this.time = Date.now();
+        this.value = data.value;
 
-      setTimeout(() => {
-        if (data.save == 1) {
-          this.getChartData();
-        }
-      }, 1000);
+        setTimeout(() => {
+          if (data.save == 1) {
+            this.getChartData();
+          }
+        }, 1000);
+      } catch (error) {
+        console.log(error);
+      }
     },
 
     getNow() {

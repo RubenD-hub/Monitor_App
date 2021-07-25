@@ -40,7 +40,7 @@ export default {
     logo: {
       type: String,
       default:
-        "http://demos.creative-tim.com/nuxt-black-dashboard-pro/img/icon-nuxt.svg",
+        "https://ih1.redbubble.net/image.818501845.2543/flat,750x1000,075,f.jpg",
       description: "Sidebar app logo"
     },
     backgroundColor: {

@@ -7,7 +7,6 @@
           <h4 class="card-title">Add new Device</h4>
         </div>
 
-        
         <div class="row">
           <!-- Device name column -->
           <div class="col-4">
@@ -44,17 +43,13 @@
                   :value="index"
                   :label="template.name"
                 ></el-option>
-
               </el-select>
-
             </base-input>
           </div>
-
         </div>
 
         <!-- Add button -->
         <div class="row pull-right">
-
           <div class="col-12">
             <base-button
               @click="createNewDevice()"
@@ -65,23 +60,19 @@
               <i class="tim-icons icon-double-right"></i> Add
             </base-button>
           </div>
-          
         </div>
-
       </card>
     </div>
 
     <!-- Devices Table -->
     <div class="row">
       <card>
-
         <div slot="header">
           <h4 class="card-title">Devices</h4>
         </div>
 
         <!-- Device Table -->
         <el-table :data="$store.state.devices">
-          
           <!-- Index column -->
           <el-table-column
             min-width="50"
@@ -99,17 +90,26 @@
           <el-table-column prop="password" label="Password"></el-table-column>
 
           <!-- Template column   -->
-          <el-table-column prop="templateName" label="Template"></el-table-column>
+          <el-table-column
+            prop="templateName"
+            label="Template"
+          ></el-table-column>
 
           <!-- Action column   -->
           <el-table-column label="Actions">
             <div slot-scope="{ row, $index }">
-
               <!-- Database saver indicator    -->
-              <el-tooltip content="Saver Status Indicator" style="margin-right:10px">
-                  <i class="fas fa-database" :class="{
+              <el-tooltip
+                content="Saver Status Indicator"
+                style="margin-right:10px"
+              >
+                <i
+                  class="fas fa-database"
+                  :class="{
                     'text-success': row.saverRule.status,
-                    'text-dark': !row.saverRule.status}"></i>
+                    'text-dark': !row.saverRule.status
+                  }"
+                ></i>
               </el-tooltip>
 
               <!-- Switch save rule status   -->
@@ -139,10 +139,6 @@
         </el-table>
       </card>
     </div>
-
-    <Json :value="$store.state.selectedDevice"></Json>
-    <!-- <Json :value="$store.state.devices"></Json> -->
-
   </div>
 </template>
 
@@ -170,7 +166,7 @@ export default {
       }
     };
   },
-  mounted(){
+  mounted() {
     // Get all devices
     this.$store.dispatch("getDevices");
     this.getTemplates();
@@ -180,43 +176,45 @@ export default {
       var ruleCopy = JSON.parse(JSON.stringify(rule));
       ruleCopy.status = !ruleCopy.status;
 
-      const toSend = { 
-        rule: ruleCopy 
+      const toSend = {
+        rule: ruleCopy
       };
       const axiosHeaders = {
         headers: {
           token: this.$store.state.auth.token
         }
       };
-      this.$axios.put("/saver-rule", toSend, axiosHeaders).then(res => {
-        if (res.data.status == "success" && ruleCopy.status == true) {
+      this.$axios
+        .put("/saver-rule", toSend, axiosHeaders)
+        .then(res => {
+          if (res.data.status == "success" && ruleCopy.status == true) {
             this.$store.dispatch("getDevices");
             this.$notify({
               type: "success",
               icon: "tim-icons icon-check-2",
               message: " Device Saver Status On"
             });
-        }
-        if (res.data.status == "success" && ruleCopy.status == false) {
+          }
+          if (res.data.status == "success" && ruleCopy.status == false) {
             this.$store.dispatch("getDevices");
             this.$notify({
               type: "warning",
               icon: "tim-icons icon-check-2",
               message: " Device Saver Status Off"
             });
-            }
+          }
 
           return;
-      })
-      .catch(e => {
-        console.log(e);
-        this.$notify({
-          type: "danger",
-          icon: "tim-icons icon-alert-circle-exc",
-          message: " Error updating saver rule status"
+        })
+        .catch(e => {
+          console.log(e);
+          this.$notify({
+            type: "danger",
+            icon: "tim-icons icon-alert-circle-exc",
+            message: " Error updating saver rule status"
+          });
+          return;
         });
-        return;
-      });
     },
 
     deleteDevice(device) {
@@ -253,7 +251,7 @@ export default {
     },
 
     //new device
-    
+
     createNewDevice() {
       if (this.newDevice.name == "") {
         this.$notify({
@@ -352,7 +350,7 @@ export default {
         return;
       }
     },
-    
+
     // Remove device
     deleteDevice(device) {
       const axiosHeader = {
@@ -375,7 +373,6 @@ export default {
             this.$store.dispatch("getDevices");
           }
           // return;
-          
         })
         .catch(e => {
           console.log(e);
@@ -386,7 +383,7 @@ export default {
           });
           // return;
         });
-    },
+    }
   }
 };
 </script>
