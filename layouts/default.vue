@@ -165,6 +165,8 @@ export default {
         if (error.response.status == 401) {
           console.log("NO VALID TOKEN");
           localStorage.clear();
+          const auth = {};
+          this.$store.commit("setAuth", auth);
           window.location.href = "/login";
         }
       }
@@ -190,6 +192,13 @@ export default {
         }
       } catch (error) {
         console.log(error);
+        if (error.response.status == 401) {
+          console.log("NO VALID TOKEN");
+          localStorage.clear();
+          const auth = {};
+          this.$store.commit("setAuth", auth);
+          window.location.href = "/login";
+        }
       }
     },
 
