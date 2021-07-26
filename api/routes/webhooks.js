@@ -29,38 +29,6 @@ var client;
 ============================================
 */
 
-var ex = {
-  username: "superuser",
-  password: "superuser",
-  topic: "5ffcc00149fdcf311a4de607/22222/",
-  variables: [
-    {
-      variable: "6hRtQGSFIl",
-      variableFullName: "Temperature",
-      variableType: "input",
-      variableSendFreq: 10
-    },
-    {
-      variable: "byTmALXl2Y",
-      variableFullName: "Humidity",
-      variableType: "input",
-      variableSendFreq: 5
-    },
-    {
-      variable: "PMHPI0zBNQ",
-      variableFullName: "Pump",
-      variableType: "output",
-      variableSendFreq: undefined
-    },
-    {
-      variable: "yvFApiNOqz",
-      variableFullName: "Fan",
-      variableType: "output",
-      variableSendFreq: undefined
-    }
-  ]
-};
-
 //DEVICE CREDENTIALS WEBHOOK
 router.post("/getdevicecredentials", async (req, res) => {
   try {
@@ -118,7 +86,7 @@ router.post("/getdevicecredentials", async (req, res) => {
 // ****************************************
 router.post("/saver-webhook", async (req, res) => {
   try {
-    if (req.headers.token != "121212") {
+    if (req.headers.token != process.env.EMQX_API_TOKEN) {
       req.sendStatus(404);
       return;
     }
@@ -152,7 +120,7 @@ router.post("/saver-webhook", async (req, res) => {
 //ALARMS WEBHOOK
 router.post("/alarm-webhook", async (req, res) => {
   try {
-    if (req.headers.token != "121212") {
+    if (req.headers.token != process.env.EMQX_API_TOKEN) {
       res.sendStatus(404);
       return;
     }
@@ -313,11 +281,11 @@ async function getDeviceMqttCredentials(dId, userId) {
 function startMqttClient() {
   const options = {
     port: 1883,
-    host: "localhost",
+    host: process.env.EMQX_NODE_HOST,
     clientId:
       "webhook_superuser" + Math.round(Math.random() * (0 - 10000) * -1),
-    username: "superuser",
-    password: "superuser",
+    username: process.env.EMQX_NODE_SUPERUSER_USER,
+    password: process.env.EMQX_NODE_SUPERUSER_PASSWORD,
     keepalive: 60,
     reconnectPeriod: 5000,
     protocolId: "MQIsdp",
@@ -326,7 +294,7 @@ function startMqttClient() {
     encoding: "utf8"
   };
 
-  client = mqtt.connect("mqtt://" + "localhost", options);
+  client = mqtt.connect("mqtt://" + process.env.EMQX_NODE_HOST, options);
 
   client.on("connect", function() {
     console.log("MQTT CONNECTION -> SUCCESS;".green);

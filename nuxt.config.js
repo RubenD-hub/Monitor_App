@@ -1,87 +1,95 @@
 export default {
   ssr: false,
   /*
-  ** Headers of the page
-  */
+   ** Headers of the page
+   */
   head: {
-    title: 'Monitor Signos', // titulo de la pagina
+    title: "Monitor Signos", // titulo de la pagina
     meta: [
-      { charset: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: process.env.npm_package_description || '' }
+      { charset: "utf-8" },
+      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      {
+        hid: "description",
+        name: "description",
+        content: process.env.npm_package_description || ""
+      }
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.png' },
-      { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Poppins:200,300,400,600,700,800' },
-      { rel: 'stylesheet', href: 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.min.css' }
+      { rel: "icon", type: "image/x-icon", href: "/favicon.png" },
+      {
+        rel: "stylesheet",
+        href:
+          "https://fonts.googleapis.com/css?family=Poppins:200,300,400,600,700,800"
+      },
+      {
+        rel: "stylesheet",
+        href:
+          "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.min.css"
+      }
     ],
     bodyAttrs: {
-      class: '' // Add `white-content` class here to enable "white" mode.
+      class: "" // Add `white-content` class here to enable "white" mode.
     }
   },
   router: {
-    linkExactActiveClass: 'active'
+    linkExactActiveClass: "active"
   },
   /*
-  ** Customize the progress-bar color
-  */
-  loading: { color: '#fff' },
+   ** Customize the progress-bar color
+   */
+  loading: { color: "#fff" },
   /*
    ** Global CSS
    */
   css: [
-    'assets/css/demo.css',
-    'assets/css/nucleo-icons.css',
-    'assets/sass/black-dashboard.scss'
+    "assets/css/demo.css",
+    "assets/css/nucleo-icons.css",
+    "assets/sass/black-dashboard.scss"
   ],
   /*
-  ** Plugins to load before mounting the App
-  */
-  plugins: [
-    `~/plugins/dashboard-plugin.js`,
-  ],
+   ** Plugins to load before mounting the App
+   */
+  plugins: [`~/plugins/dashboard-plugin.js`],
   //autoimport
   components: true,
   /*
-  ** Nuxt.js dev-modules
-  */
+   ** Nuxt.js dev-modules
+   */
   buildModules: [],
   /*
-  ** Nuxt.js modules
-  */
-  modules: [
-    '@nuxtjs/pwa',
-    '@nuxtjs/axios',
-    'nuxt-highcharts',
-  ],
-
-
+   ** Nuxt.js modules
+   */
+  modules: ["@nuxtjs/pwa", "@nuxtjs/axios", "nuxt-highcharts"],
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
   axios: {
-    baseURL: "http://127.0.0.1:3001/api"
+    baseURL: process.env.AXIOS_BASE_URL
+  },
+  env: {
+    mqtt_prefix: process.env.MQTT_PREFIX,
+    mqtt_host: process.env.MQTT_HOST,
+    mqtt_port: process.env.MQTT_PORT
   },
 
   /*
-  ** Build configuration
-  */
+   ** Build configuration
+   */
   build: {
     transpile: [/^element-ui/],
     /*
-    ** You can extend webpack config here
-    */
-    extend(config, ctx) {
-    },
+     ** You can extend webpack config here
+     */
+    extend(config, ctx) {},
     babel: {
       plugins: [
         [
-          'component',
+          "component",
           {
-            'libraryName': 'element-ui',
-            'styleLibraryName': 'theme-chalk'
+            libraryName: "element-ui",
+            styleLibraryName: "theme-chalk"
           }
         ]
       ]
     }
   }
-}
+};

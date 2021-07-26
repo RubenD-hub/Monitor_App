@@ -1,11 +1,12 @@
 // Libreries
 
-const express = require('express');     // --> Server
-const mongoose = require("mongoose");   // --> Mongo conection
-const morgan = require("morgan");       // --> Show request
-const cors = require("cors");           // --> Access policies
-const colors = require("colors");       // --> Answer color (console)
+const express = require("express"); // --> Server
+const mongoose = require("mongoose"); // --> Mongo conection
+const morgan = require("morgan"); // --> Show request
+const cors = require("cors"); // --> Access policies
+const colors = require("colors"); // --> Answer color (console)
 
+require("dotenv").config();
 
 // Instances
 const app = express();
@@ -32,21 +33,16 @@ app.use("/api", require("./routes/dataprovider.js"));
 module.exports = app;
 
 // Listener
-app.listen(3001, () => {
-    console.log("Api server listening on port 3001");
+app.listen(process.env.API_PORT, () => {
+  console.log("Api server listening on port " + process.env.API_PORT);
 });
 
-
-
-
-
-
 //Mongo Connection
-const mongoUserName = "devuser";
-const mongoPassword = "devpassword";
-const mongoHost = "localhost";
-const mongoPort = "27017";
-const mongoDatabase = "Monitor";
+const mongoUserName = process.env.MONGO_USERNAME;
+const mongoPassword = process.env.MONGO_PASSWORD;
+const mongoHost = process.env.MONGO_HOST;
+const mongoPort = process.env.MONGO_PORT;
+const mongoDatabase = process.env.MONGO_DATABASE;
 
 var uri =
   "mongodb://" +
@@ -68,21 +64,20 @@ const options = {
   authSource: "admin"
 };
 
-
 mongoose.connect(uri, options).then(
-    () => {
-        console.log("\n");
-        console.log("*******************************".green);
-        console.log("✔ Mongo Successfully Connected!".green);
-        console.log("*******************************".green);
-        console.log("\n");
-    },
-    (err) => {
-        console.log("\n");
-        console.log("*******************************".red);
-        console.log("    Mongo Connection Failed    ".red);
-        console.log("*******************************".red);
-        console.log("\n");
-        console.log(err);
-    }
+  () => {
+    console.log("\n");
+    console.log("*******************************".green);
+    console.log("✔ Mongo Successfully Connected!".green);
+    console.log("*******************************".green);
+    console.log("\n");
+  },
+  err => {
+    console.log("\n");
+    console.log("*******************************".red);
+    console.log("    Mongo Connection Failed    ".red);
+    console.log("*******************************".red);
+    console.log("\n");
+    console.log(err);
+  }
 );
