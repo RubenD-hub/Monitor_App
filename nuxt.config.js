@@ -70,6 +70,14 @@ export default {
     mqtt_host: process.env.MQTT_HOST,
     mqtt_port: process.env.MQTT_PORT
   },
+  server: {
+    port: 3000, // default: 3000
+    host: "0.0.0.0" // default: localhost
+  },
+
+  serverMiddleware: {
+    "/api": "~/api"
+  },
 
   /*
    ** Build configuration
