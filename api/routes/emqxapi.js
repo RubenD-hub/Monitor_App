@@ -34,7 +34,7 @@ Para borrar manualmente los recursos y reiniciemos node */
 async function listResources() {
   try {
     const url =
-      "http://" + process.env.EMQX_NODE_HOST + ":8085/api/v4/resources/";
+      "http://" + process.env.EMQX_API_HOST + ":8085/api/v4/resources/";
 
     const res = await axios.get(url, auth);
 
@@ -93,12 +93,12 @@ async function listResources() {
 async function createResources() {
   try {
     const url =
-      "http://" + process.env.EMQX_NODE_HOST + ":8085/api/v4/resources";
+      "http://" + process.env.EMQX_API_HOST + ":8085/api/v4/resources";
 
     const data1 = {
       type: "web_hook",
       config: {
-        url: "http://" + process.env.EMQX_NODE_HOST + ":3001/api/saver-webhook",
+        url: "http://" + process.env.WEBHOOKS_HOST + ":3001/api/saver-webhook",
         headers: {
           token: process.env.EMQX_API_TOKEN
         },
@@ -110,7 +110,7 @@ async function createResources() {
     const data2 = {
       type: "web_hook",
       config: {
-        url: "http://" + process.env.EMQX_NODE_HOST + ":3001/api/alarm-webhook",
+        url: "http://" + process.env.WEBHOOKS_HOST + ":3001/api/alarm-webhook",
         headers: {
           token: process.env.EMQX_API_TOKEN
         },
@@ -152,9 +152,9 @@ global.check_mqtt_superuser = async function checkMqttSuperUser() {
       await EmqxAuthRule.create({
         publish: ["#"],
         subscribe: ["#"],
-        userId: "aaaaaaaaaaa",
-        username: "superuser",
-        password: "superuser",
+        userId: "emqxmqttsuperuser",
+        username: process.env.EMQX_NODE_SUPERUSER_USER,
+        password: process.env.EMQX_NODE_SUPERUSER_PASSWORD,
         type: "superuser",
         time: Date.now(),
         updatedTime: Date.now()

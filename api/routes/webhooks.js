@@ -87,7 +87,7 @@ router.post("/getdevicecredentials", async (req, res) => {
 router.post("/saver-webhook", async (req, res) => {
   try {
     if (req.headers.token != process.env.EMQX_API_TOKEN) {
-      req.sendStatus(404);
+      res.status(404).json();
       return;
     }
 
@@ -110,10 +110,10 @@ router.post("/saver-webhook", async (req, res) => {
       console.log("Data created");
     }
 
-    res.sendStatus(200);
+    return res.status(200).json();
   } catch (error) {
     console.log(error);
-    res.sendStatus(200);
+    return res.status(200).json();
   }
 });
 
@@ -121,11 +121,11 @@ router.post("/saver-webhook", async (req, res) => {
 router.post("/alarm-webhook", async (req, res) => {
   try {
     if (req.headers.token != process.env.EMQX_API_TOKEN) {
-      res.sendStatus(404);
+      res.status(404).json();
       return;
     }
 
-    res.sendStatus(200);
+    res.status(200).json();
 
     const incomingAlarm = req.body;
 
@@ -153,7 +153,7 @@ router.post("/alarm-webhook", async (req, res) => {
     }
   } catch (error) {
     console.log(error);
-    res.sendStatus(200);
+    return res.status(500).json();
   }
 });
 
@@ -281,7 +281,7 @@ async function getDeviceMqttCredentials(dId, userId) {
 function startMqttClient() {
   const options = {
     port: 1883,
-    host: process.env.EMQX_NODE_HOST,
+    host: process.env.EMQX_API_HOST,
     clientId:
       "webhook_superuser" + Math.round(Math.random() * (0 - 10000) * -1),
     username: process.env.EMQX_NODE_SUPERUSER_USER,
@@ -294,7 +294,7 @@ function startMqttClient() {
     encoding: "utf8"
   };
 
-  client = mqtt.connect("mqtt://" + process.env.EMQX_NODE_HOST, options);
+  client = mqtt.connect("mqtt://" + process.env.EMQX_API_HOST, options);
 
   client.on("connect", function() {
     console.log("MQTT CONNECTION -> SUCCESS;".green);
